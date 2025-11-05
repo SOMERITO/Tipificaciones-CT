@@ -1,3 +1,62 @@
+¡Entendido! Quieres que la búsqueda sea más flexible y que funcione sin importar si el usuario escribe una palabra con tilde o sin tilde (por ejemplo, buscar "físico" o "fisico"). ¡Eso hará tu buscador mucho más robusto! 🔎
+
+Para lograr esto, debemos modificar el paso 6.2 de la función de búsqueda en el JavaScript, usando una técnica que se llama "normalización". 🍎
+
+🍎 Agregando Búsqueda sin Tildes (Normalización)
+En JavaScript, podemos usar el método normalize('NFD') seguido de una expresión regular para eliminar acentos y diéresis de cualquier cadena de texto. Aplicaremos esta técnica tanto al texto que está en tus datos (c.codigo, c.tipificacion, etc.) como al texto que el usuario introduce (texto).
+
+1. El Código a Agregar
+Debes modificar la sección 6.2 de tu código.
+
+CÓDIGO ORIGINAL (en la función input.addEventListener):
+
+JavaScript
+
+            // 6.2. Aplica el filtro de texto sobre el subconjunto
+            const filtradasPorTexto = listaBase.filter(c =>
+                c.codigo.toLowerCase().includes(texto) ||
+                c.tipificacion.toLowerCase().includes(texto) ||
+                c.respuesta.toLowerCase().includes(texto)
+            );
+CÓDIGO MODIFICADO (con soporte para búsqueda sin tildes):
+
+JavaScript
+
+            // Función auxiliar para eliminar acentos de una cadena
+            const quitarAcentos = (str) => {
+                return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            };
+
+            const textoSinAcentos = quitarAcentos(texto);
+
+            // 6.2. Aplica el filtro de texto sobre el subconjunto (buscando en las versiones sin acentos)
+            const filtradasPorTexto = listaBase.filter(c => {
+                const codigoSinAcentos = quitarAcentos(c.codigo.toLowerCase());
+                const tipificacionSinAcentos = quitarAcentos(c.tipificacion.toLowerCase());
+                const respuestaSinAcentos = quitarAcentos(c.respuesta.toLowerCase());
+
+                return codigoSinAcentos.includes(textoSinAcentos) ||
+                       tipificacionSinAcentos.includes(textoSinAcentos) ||
+                       respuestaSinAcentos.includes(textoSinAcentos);
+            });
+2. Explicación del Cambio
+Función quitarAcentos: Esta nueva función toma cualquier texto:
+
+normalize("NFD"): Descompone los caracteres acentuados en dos partes (la letra base + el acento). Ejemplo: 'á' se convierte en 'a' + el acento.
+
+replace(/[\u0300-\u036f]/g, ""): Elimina todas esas partes de acentos sobrantes, dejando solo la letra base ('a').
+
+Normalización de la Entrada: Aplicamos quitarAcentos al texto que introduce el usuario: const textoSinAcentos = quitarAcentos(texto);.
+
+Normalización de la Data: Dentro del filtro, aplicamos quitarAcentos a cada campo (codigo, tipificacion, respuesta) antes de compararlo.
+
+Búsqueda Imparcial: Finalmente, comparamos el textoSinAcentos (por ejemplo, "fisico") contra las versiones sin acento de los datos (por ejemplo, "fisico"). ¡La coincidencia es perfecta!
+
+📜 Código Completo y Final (con Búsqueda sin Tildes)
+Aquí tienes el código completo con todas las mejoras (segmentación, atajo Ctrl+F y búsqueda sin acentos), listo para usar:
+
+HTML
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,13 +68,13 @@
         /* Estilos Generales */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f4f4f9; /* Fondo muy claro */
+            background: #f4f4f9; 
             text-align: center;
             margin: 0;
             padding: 20px;
         }
         h1 {
-            color: #7900b9; /* Color similar al morado UPC */
+            color: #7900b9; 
         }
         /* Estilo de la caja de búsqueda */
         input {
@@ -61,7 +120,7 @@
         /* Estilos de cada item de la lista */
         .item {
             background: white;
-            border-left: 8px solid #7900b9; /* Barra lateral morada */
+            border-left: 8px solid #7900b9; 
             margin: 10px auto;
             padding: 15px;
             width: 80%;
@@ -87,7 +146,7 @@
         .categoria-tag {
             font-size: 0.7em;
             color: white;
-            background: #3498db; /* Azul para la categoría */
+            background: #3498db; 
             padding: 4px 8px;
             border-radius: 4px;
             font-weight: 600;
@@ -181,6 +240,12 @@
 
         let categoriaActiva = "Todos"; 
 
+        // Función auxiliar para eliminar acentos de una cadena
+        const quitarAcentos = (str) => {
+            // Convierte a la forma NFD (letra + acento por separado) y elimina los acentos
+            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        };
+
         // 3. FUNCIÓN PARA DIBUJAR LA LISTA
         function mostrarTramites(filtradas) {
             lista.innerHTML = ""; 
@@ -235,26 +300,35 @@
         input.addEventListener("input", () => {
             const texto = input.value.toLowerCase();
             
+            // 6.1. Define el subconjunto base (la lista completa o la lista ya segmentada)
             let listaBase = tramites;
             if (categoriaActiva !== "Todos") {
                 listaBase = tramites.filter(tramite => tramite.categoria === categoriaActiva);
             }
 
-            const filtradasPorTexto = listaBase.filter(c =>
-                c.codigo.toLowerCase().includes(texto) ||
-                c.tipificacion.toLowerCase().includes(texto) ||
-                c.respuesta.toLowerCase().includes(texto)
-            );
+            // Normaliza la entrada de texto
+            const textoSinAcentos = quitarAcentos(texto);
+
+            // 6.2. Aplica el filtro de texto sobre el subconjunto (buscando en las versiones sin acentos)
+            const filtradasPorTexto = listaBase.filter(c => {
+                // Normaliza y convierte a minúsculas los campos de los datos para la comparación
+                const codigoSinAcentos = quitarAcentos(c.codigo.toLowerCase());
+                const tipificacionSinAcentos = quitarAcentos(c.tipificacion.toLowerCase());
+                const respuestaSinAcentos = quitarAcentos(c.respuesta.toLowerCase());
+
+                return codigoSinAcentos.includes(textoSinAcentos) ||
+                       tipificacionSinAcentos.includes(textoSinAcentos) ||
+                       respuestaSinAcentos.includes(textoSinAcentos);
+            });
             
             mostrarTramites(filtradasPorTexto);
         });
         
         // 7. EVENTO DE TECLADO PARA FOCALIZAR EL BUSCADOR (CTRL + F)
         document.addEventListener('keydown', (e) => {
-            // Verifica que sea la tecla 'f' y que se presione Ctrl o Cmd (Meta)
             if (e.key === 'f' && (e.ctrlKey || e.metaKey)) {
-                e.preventDefault(); // Detiene el comportamiento de búsqueda del navegador
-                input.focus();      // Mueve el foco a la caja de búsqueda
+                e.preventDefault(); 
+                input.focus();      
             }
         });
 
