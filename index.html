@@ -1,88 +1,355 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Buscador de Tipificaciones</title>
-    <style>
-        /* Estilos CSS sencillos para que se vea mejor */
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        #busquedaInput { padding: 10px; width: 80%; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; }
-        .resaltar { background-color: yellow; } /* Clase para resaltar resultados */
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #38761d; color: white; }
-    </style>
-</head>
-<body>
-
-    <h1>🔍 Buscador Interactivo de Tipificaciones</h1>
-
-    <input type="text" id="busquedaInput" onkeyup="filtrarTabla()" placeholder="Escribe aquí el Título, Detalle o Ruta...">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🚒 Claves CGBVP</title>
     
-    <hr>
+    <style>
+        /* Estilos Generales */
+        body {
+            font-family: Arial, sans-serif;
+            background: #fff5f5; /* Fondo blanco suave con un toque rosado */
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #c0392b; /* Color rojo fuerte para el título */
+        }
+        /* Estilo de la caja de búsqueda */
+        input {
+            width: 80%;
+            padding: 10px;
+            border: 2px solid #c0392b;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box; /* Asegura que el padding no cambie el ancho total */
+            max-width: 600px;
+            font-size: 1em;
+        }
+        /* Estilos para la barra de filtros */
+        #filtros {
+            margin-bottom: 20px;
+            display: flex; 
+            flex-wrap: wrap; /* Permite que los botones se envuelvan en pantallas pequeñas */
+            justify-content: center;
+            max-width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #filtros button {
+            background-color: #eee;
+            color: #333;
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            margin: 4px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+            font-size: 0.85em;
+            white-space: nowrap; 
+        }
+        /* Estilo para resaltar el botón activo */
+        #filtros button.active,
+        #filtros button:hover {
+            background-color: #c0392b;
+            color: white;
+            border-color: #c0392b;
+        }
 
-    <table id="tablaTipificaciones">
-        <thead>
-            <tr>
-                <th>Título</th>
-                <th>Detalle de Tipificación</th>
-                <th>Ruta de Tipificación</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>RETIRO DE CICLO - PASOS</td>
-                <td>Solicita información sobre trámite de Retiro de Ciclo / Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC. </td>
-                <td>Trámites > Retiro de ciclo > Fechas e información clave del proceso</td>
-            </tr>
-            <tr>
-                <td>SOLICITUD DE CRÉDITOS EXTRAS</td>
-                <td>Consulta si es posible matricularse en 25 créditos en lugar de 22, indica que desea llevar un curso extra. Se le explica el proceso de solicitud y requisitos.</td>
-                <td>Trámites > Matrícula > Límite de créditos</td>
-            </tr>
-            </tbody>
-    </table>
+        /* Estilos de cada item de la lista */
+        .item {
+            background: white;
+            border-left: 8px solid #c0392b; /* Barra de color en el lateral */
+            margin: 10px auto;
+            padding: 10px;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .codigo {
+            font-weight: bold;
+            color: #c0392b;
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+        .descripcion {
+            font-size: 1em;
+            flex-grow: 1;
+        }
+        .categoria-tag {
+            font-size: 0.7em;
+            color: #666;
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+    </style>
+    </head>
+<body>
+    <h1>🚒 Claves CGBVP</h1>
+    
+    <input type="text" id="busqueda" placeholder="Buscar código o descripción..." />
+
+    <div id="filtros">
+        <button data-filtro="Todos" class="active">Todos</button>
+        <button data-filtro="Servicios">Servicios</button>
+        <button data-filtro="Emergencias">Emergencias</button>
+        <button data-filtro="Especiales">Especiales</button>
+        <button data-filtro="Jerarquías">Jerarquías</button>
+        <button data-filtro="Compañía">Compañía</button>
+        <button data-filtro="Nacional">Nacional</button>
+        <button data-filtro="Locales">Locales</button>
+        <button data-filtro="Personal">Personal</button>
+    </div>
+    
+    <div id="lista"></div>
 
     <script>
-        // ¡Aquí viene la magia de JavaScript para que el buscador funcione!
-        function filtrarTabla() {
-            // Declaración de variables
-            var input, filtro, tabla, tr, td, i, j, textoValor;
-            input = document.getElementById("busquedaInput");
-            // Convierte el texto de búsqueda a mayúsculas para no distinguir entre mayúsculas y minúsculas
-            filtro = input.value.toUpperCase();
-            tabla = document.getElementById("tablaTipificaciones");
-            tr = tabla.getElementsByTagName("tr");
+        // 1. DATASET COMPLETO (La lista de claves)
+        const claves = [
+            // SECCIÓN 10. SERVICIOS
+            { "codigo": "10.01", "descripcion": "Adelante", "categoria": "Servicios" },
+            { "codigo": "10.02", "descripcion": "Operador de radio identifíquese", "categoria": "Servicios" },
+            { "codigo": "10.03", "descripcion": "Cambie frecuencia radial", "categoria": "Servicios" },
+            { "codigo": "10.04", "descripcion": "Llame por teléfono", "categoria": "Servicios" },
+            { "codigo": "10.05", "descripcion": "Comprendido", "categoria": "Servicios" },
+            { "codigo": "10.06", "descripcion": "Afirmativo", "categoria": "Servicios" },
+            { "codigo": "10.07", "descripcion": "Se dirige / Diríjase", "categoria": "Servicios" },
+            { "codigo": "10.08", "descripcion": "Repita mensaje", "categoria": "Servicios" },
+            { "codigo": "10.09", "descripcion": "Negativo", "categoria": "Servicios" },
+            { "codigo": "10.10", "descripcion": "Comunicación con", "categoria": "Servicios" },
+            { "codigo": "10.11", "descripcion": "Al mando de la unidad", "categoria": "Servicios" },
+            { "codigo": "10.12", "descripcion": "Siga en escucha", "categoria": "Servicios" },
+            { "codigo": "10.13", "descripcion": "Derrotero", "categoria": "Servicios" },
+            { "codigo": "10.14", "descripcion": "Se consulta", "categoria": "Servicios" },
+            { "codigo": "10.15", "descripcion": "Efectivos", "categoria": "Servicios" },
+            { "codigo": "10.16", "descripcion": "Indique magnitud", "categoria": "Servicios" },
+            { "codigo": "10.17", "descripcion": "Informe novedades", "categoria": "Servicios" },
+            { "codigo": "10.18", "descripcion": "Dirección", "categoria": "Servicios" },
+            { "codigo": "10.19", "descripcion": "Ubicación", "categoria": "Servicios" },
+            { "codigo": "10.20", "descripcion": "En el lugar", "categoria": "Servicios" },
+            { "codigo": "10.21", "descripcion": "Línea privada", "categoria": "Servicios" },
+            { "codigo": "10.22", "descripcion": "En sintonía", "categoria": "Servicios" },
+            { "codigo": "10.23", "descripcion": "Se retira del lugar", "categoria": "Servicios" },
+            { "codigo": "10.24", "descripcion": "Urgente", "categoria": "Servicios" },
+            { "codigo": "10.25", "descripcion": "Emergencia confirmada", "categoria": "Servicios" },
+            { "codigo": "10.26", "descripcion": "En servicio", "categoria": "Servicios" },
+            { "codigo": "10.27", "descripcion": "Disponible", "categoria": "Servicios" },
+            { "codigo": "10.28", "descripcion": "Emergencia cancelada", "categoria": "Servicios" },
+            { "codigo": "10.29", "descripcion": "Continue en alerta", "categoria": "Servicios" },
+            { "codigo": "10.30", "descripcion": "Ingresa su base", "categoria": "Servicios" },
+            { "codigo": "10.31", "descripcion": "Traslado / transporte", "categoria": "Servicios" },
+            { "codigo": "10.32", "descripcion": "Emergencia en progreso", "categoria": "Servicios" },
+            { "codigo": "10.33", "descripcion": "Emergencia controlada", "categoria": "Servicios" },
+            { "codigo": "10.34", "descripcion": "Tome precauciones", "categoria": "Servicios" },
+            { "codigo": "10.35", "descripcion": "Requiere policía", "categoria": "Servicios" },
+            { "codigo": "10.36", "descripcion": "Fuera de sintonía", "categoria": "Servicios" },
+            { "codigo": "10.37", "descripcion": "Requiere empresa eléctrica", "categoria": "Servicios" },
+            { "codigo": "10.38", "descripcion": "Abastecimiento de...", "categoria": "Servicios" },
+            { "codigo": "10.39", "descripcion": "Fuera de servicio", "categoria": "Servicios" },
+            { "codigo": "10.40", "descripcion": "Espere ordenes", "categoria": "Servicios" },
+            { "codigo": "10.41", "descripcion": "Herido", "categoria": "Servicios" },
+            { "codigo": "10.42", "descripcion": "Muerto", "categoria": "Servicios" },
+            { "codigo": "10.43", "descripcion": "Herido FFAA/FFPP", "categoria": "Servicios" },
+            { "codigo": "10.44", "descripcion": "Paramédico", "categoria": "Servicios" },
+            { "codigo": "10.45", "descripcion": "Medico", "categoria": "Servicios" },
+            { "codigo": "10.46", "descripcion": "Enfermo", "categoria": "Servicios" },
+            { "codigo": "10.47", "descripcion": "No interrumpir", "categoria": "Servicios" },
+            { "codigo": "10.48", "descripcion": "Bombero piloto", "categoria": "Servicios" },
+            { "codigo": "10.49", "descripcion": "Piloto rentado", "categoria": "Servicios" },
+            { "codigo": "10.50", "descripcion": "En estado de alerta", "categoria": "Servicios" },
+            { "codigo": "10.51", "descripcion": "Parturienta", "categoria": "Servicios" },
+            { "codigo": "10.52", "descripcion": "Toque sirena", "categoria": "Servicios" },
+            { "codigo": "10.53", "descripcion": "Regrese a su base", "categoria": "Servicios" },
+            { "codigo": "10.54", "descripcion": "Prosiga la marcha", "categoria": "Servicios" },
+            { "codigo": "10.55", "descripcion": "Requiere de empresa de saneamiento", "categoria": "Servicios" },
+            { "codigo": "10.56", "descripcion": "Deje sin efecto", "categoria": "Servicios" },
+            { "codigo": "10.57", "descripcion": "Utilice claves", "categoria": "Servicios" },
+            { "codigo": "10.58", "descripcion": "Fin de estado de alerta", "categoria": "Servicios" },
+            { "codigo": "10.59", "descripcion": "Guardia nocturna", "categoria": "Servicios" },
+            { "codigo": "10.60", "descripcion": "Tipo de emergencia", "categoria": "Servicios" },
 
-            // Recorre todas las filas de la tabla, excepto la cabecera (i=1)
-            for (i = 1; i < tr.length; i++) {
-                // Por defecto, asumimos que la fila no coincide
-                let encontrado = false;
+            // SECCIÓN 20. EMERGENCIAS
+            { "codigo": "20.01", "descripcion": "Efectivo CGBVP accidentado", "categoria": "Emergencias" },
+            { "codigo": "20.02", "descripcion": "Vehículo CGBVP accidentado", "categoria": "Emergencias" },
+            { "codigo": "20.03", "descripcion": "Atentado/artefacto explosivo", "categoria": "Emergencias" },
+            { "codigo": "20.04", "descripcion": "Atropellado", "categoria": "Emergencias" },
+            { "codigo": "20.05", "descripcion": "Ascensor atrapado", "categoria": "Emergencias" },
+            { "codigo": "20.06", "descripcion": "Inundación", "categoria": "Emergencias" },
+            { "codigo": "20.07", "descripcion": "Falsa Alarma", "categoria": "Emergencias" },
+            { "codigo": "20.08", "descripcion": "Incendio vehicular", "categoria": "Emergencias" },
+            { "codigo": "20.09", "descripcion": "Derrumbe", "categoria": "Emergencias" },
+            { "codigo": "20.10", "descripcion": "Derrame producto ¿?", "categoria": "Emergencias" },
+            { "codigo": "20.11", "descripcion": "Material peligros-indique", "categoria": "Emergencias" },
+            { "codigo": "20.12", "descripcion": "Fuga de gas", "categoria": "Emergencias" },
+            { "codigo": "20.13", "descripcion": "Grifo/cisterna", "categoria": "Emergencias" },
+            { "codigo": "20.14", "descripcion": "Incendio/no apoyo", "categoria": "Emergencias" },
+            { "codigo": "20.15", "descripcion": "Incendio/1 unidad de apoyo", "categoria": "Emergencias" },
+            { "codigo": "20.16", "descripcion": "Incendio/2 unidad de apoyo", "categoria": "Emergencias" },
+            { "codigo": "20.17", "descripcion": "Incendio/+2 unidad de apoyo", "categoria": "Emergencias" },
+            { "codigo": "20.18", "descripcion": "Incendio/+3 unidad de apoyo", "categoria": "Emergencias" },
+            { "codigo": "20.19", "descripcion": "Catástrofe-orden 7.11-7.12", "categoria": "Emergencias" },
+            { "codigo": "20.20", "descripcion": "Incendio forestal", "categoria": "Emergencias" },
+            { "codigo": "20.21", "descripcion": "Incendio terreno baldío", "categoria": "Emergencias" },
+            { "codigo": "20.22", "descripcion": "Corto circuito", "categoria": "Emergencias" },
+            { "codigo": "20.23", "descripcion": "Accidente vehicular", "categoria": "Emergencias" },
+            { "codigo": "20.24", "descripcion": "Rescate /Atrapados", "categoria": "Emergencias" },
+            { "codigo": "20.25", "descripcion": "Huayco/Erupción volcánica", "categoria": "Emergencias" },
+            { "codigo": "20.26", "descripcion": "Evacuación/Fumigación", "categoria": "Emergencias" },
+            { "codigo": "20.27", "descripcion": "Poste eléctrico/aviso luminoso", "categoria": "Emergencias" },
+
+            // SECCIÓN 30. SERVICIOS ESPECIALES
+            { "codigo": "30.30", "descripcion": "Otro servicio/Servicio especial", "categoria": "Especiales" },
+            { "codigo": "30.31", "descripcion": "Practicas/charlas/simulacros/ceremonias", "categoria": "Especiales" },
+            { "codigo": "30.32", "descripcion": "Eventos/conciertos/festivales", "categoria": "Especiales" },
+            { "codigo": "30.33", "descripcion": "Abrir puertas", "categoria": "Especiales" },
+            { "codigo": "30.34", "descripcion": "Colocar letreros/pancartas", "categoria": "Especiales" },
+            { "codigo": "30.35", "descripcion": "Velorio/Entierro", "categoria": "Especiales" },
+            { "codigo": "30.36", "descripcion": "Apoyos sociales (servicios de agua/vacunación)", "categoria": "Especiales" },
+
+            // SECCIÓN 3. JERARQUÍAS
+            { "codigo": "3.01", "descripcion": "Brigadier General", "categoria": "Jerarquías" },
+            { "codigo": "3.02", "descripcion": "Brigadier Mayor", "categoria": "Jerarquías" },
+            { "codigo": "3.03", "descripcion": "Brigadier", "categoria": "Jerarquías" },
+            { "codigo": "3.04", "descripcion": "Teniente brigadier", "categoria": "Jerarquías" },
+            { "codigo": "3.05", "descripcion": "Capitán", "categoria": "Jerarquías" },
+            { "codigo": "3.06", "descripcion": "Teniente", "categoria": "Jerarquías" },
+            { "codigo": "3.07", "descripcion": "sub. teniente", "categoria": "Jerarquías" },
+            { "codigo": "3.08", "descripcion": "Seccionario", "categoria": "Jerarquías" },
+            { "codigo": "3.09", "descripcion": "Alumno", "categoria": "Jerarquías" },
+
+            // SECCIÓN 7. COMANDO REGIONAL (Nacional)
+            { "codigo": "7.11", "descripcion": "Comandante regional", "categoria": "Nacional" },
+            { "codigo": "7.12", "descripcion": "Vice Comandante regional", "categoria": "Nacional" },
+            { "codigo": "7.13", "descripcion": "Inspector regional", "categoria": "Nacional" },
+            { "codigo": "7.14", "descripcion": "Presidente del concejo de disciplina", "categoria": "Nacional" },
+            { "codigo": "7.16", "descripcion": "Jefe de brigada", "categoria": "Nacional" },
+            { "codigo": "7.17", "descripcion": "Jefe de personal", "categoria": "Nacional" },
+            { "codigo": "7.19", "descripcion": "Jefe de logística y mantenimiento", "categoria": "Nacional" },
+            { "codigo": "7.21", "descripcion": "Jefe de técnica", "categoria": "Nacional" },
+            { "codigo": "7.22", "descripcion": "Jefe de sanidad regional", "categoria": "Nacional" },
+            { "codigo": "7.25", "descripcion": "Jefe de RRPP", "categoria": "Nacional" },
+
+            // SECCIÓN 30. COMPAÑÍA (Jefaturas)
+            { "codigo": "30.11", "descripcion": "Primer jefe de compañía", "categoria": "Compañía" },
+            { "codigo": "33.12", "descripcion": "Segundo jefe de compañía", "categoria": "Compañía" },
+            { "codigo": "30.13", "descripcion": "Jefe de operaciones emergencias", "categoria": "Compañía" },
+            { "codigo": "30.14", "descripcion": "Jefe operación 1", "categoria": "Compañía" },
+            { "codigo": "30.15", "descripcion": "Jefe de operaciones 2", "categoria": "Compañía" },
+            { "codigo": "30.16", "descripcion": "Jefe de operaciones 3", "categoria": "Compañía" },
+            { "codigo": "30.17", "descripcion": "Jefe de administración", "categoria": "Compañía" },
+            { "codigo": "30.18", "descripcion": "Jefe de servicio", "categoria": "Compañía" },
+            { "codigo": "30.19", "descripcion": "Jefe de disciplina", "categoria": "Compañía" },
+            { "codigo": "30.22", "descripcion": "Medico de turno", "categoria": "Compañía" },
+
+            // SECCIÓN X. LOCALES
+            { "codigo": "X6", "descripcion": "Comando regional", "categoria": "Locales" },
+            { "codigo": "X7", "descripcion": "Cuartel de compañía", "categoria": "Locales" },
+            { "codigo": "X14", "descripcion": "Domicilio", "categoria": "Locales" },
+            { "codigo": "X15", "descripcion": "Centro de trabajo", "categoria": "Locales" },
+
+            // SECCIÓN 1. PERSONAL RENTADO (Personal)
+            { "codigo": "1.01", "descripcion": "Contador", "categoria": "Personal" },
+            { "codigo": "1.02", "descripcion": "Secretaria", "categoria": "Personal" },
+            { "codigo": "1.03", "descripcion": "Auxiliar de secretaria", "categoria": "Personal" },
+            { "codigo": "1.04", "descripcion": "Chofer cuartelero", "categoria": "Personal" },
+            { "codigo": "1.05", "descripcion": "Cuartelero", "categoria": "Personal" },
+            { "codigo": "1.06", "descripcion": "Operador de radio", "categoria": "Personal" },
+            { "codigo": "1.07", "descripcion": "Obrero", "categoria": "Personal" },
+            { "codigo": "1.08", "descripcion": "Conserje", "categoria": "Personal" },
+            { "codigo": "1.09", "descripcion": "Practicante", "categoria": "Personal" }
+        ];
+
+        // 2. OBTENER ELEMENTOS DEL DOM
+        const input = document.getElementById("busqueda");
+        const lista = document.getElementById("lista");
+        const contenedorFiltros = document.getElementById("filtros");
+
+        let categoriaActiva = "Todos"; // Controla qué segmento está seleccionado
+
+        // 3. FUNCIÓN PARA DIBUJAR LA LISTA
+        function mostrarClaves(filtradas) {
+            lista.innerHTML = ""; // Limpiar la lista actual
+            filtradas.forEach(c => {
+                const div = document.createElement("div");
+                div.classList.add("item");
                 
-                // Recorre las 3 celdas (Título, Detalle, Ruta) de la fila actual
-                for (j = 0; j < 3; j++) {
-                    td = tr[i].getElementsByTagName("td")[j];
-                    if (td) {
-                        textoValor = td.textContent || td.innerText;
-                        
-                        // Busca si el texto de la celda contiene lo que escribimos en el filtro
-                        if (textoValor.toUpperCase().indexOf(filtro) > -1) {
-                            encontrado = true;
-                            // Opcional: Resalta la palabra encontrada en la celda
-                            // Esta parte es avanzada, por ahora solo mostramos/ocultamos la fila.
-                        }
-                    }
-                }
-
-                // Muestra la fila (display: "") si se encontró la palabra en alguna de sus 3 celdas.
-                if (encontrado) {
-                    tr[i].style.display = "";
-                } else {
-                    // Oculta la fila (display: "none") si no se encontró en ninguna celda.
-                    tr[i].style.display = "none";
-                }
-            }
+                // Crea la estructura de la clave
+                div.innerHTML = `
+                    <div class="item-header">
+                        <span class="codigo">${c.codigo}</span>
+                        <span class="categoria-tag">${c.categoria}</span>
+                    </div>
+                    <span class="descripcion">${c.descripcion}</span>
+                `;
+                lista.appendChild(div);
+            });
         }
-    </script>
 
-</body>
+        // 4. FUNCIÓN MAESTRA DE SEGMENTACIÓN (FILTRADO POR CATEGORÍA)
+        function filtrarPorCategoria(categoria) {
+            let listaResultado = claves; // Empezamos con el conjunto completo
+
+            // Si la categoría NO es "Todos", usamos .filter() para segmentar el conjunto
+            if (categoria !== "Todos") {
+                listaResultado = claves.filter(clave => clave.categoria === categoria);
+            }
+
+            // Muestra los resultados segmentados
+            mostrarClaves(listaResultado);
+            
+            // Actualiza el estilo del botón activo
+            document.querySelectorAll('#filtros button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-filtro="${categoria}"]`).classList.add('active');
+            
+            // Guarda la categoría activa para la búsqueda por texto
+            categoriaActiva = categoria; 
+        }
+
+        // 5. EVENTO PARA EL FILTRO POR BOTÓN (CLICK)
+        contenedorFiltros.addEventListener("click", (evento) => {
+            if (evento.target.tagName === 'BUTTON' && evento.target.dataset.filtro) {
+                const categoriaSeleccionada = evento.target.dataset.filtro;
+                input.value = ""; // Limpia la búsqueda al cambiar de filtro
+                filtrarPorCategoria(categoriaSeleccionada);
+            }
+        });
+
+        // 6. EVENTO PARA LA BÚSQUEDA POR TEXTO (INPUT)
+        input.addEventListener("input", () => {
+            const texto = input.value.toLowerCase();
+            
+            // 6.1. Define el subconjunto base (la lista completa o la lista ya segmentada)
+            let listaBase = claves;
+            if (categoriaActiva !== "Todos") {
+                listaBase = claves.filter(clave => clave.categoria === categoriaActiva);
+            }
+
+            // 6.2. Aplica el filtro de texto sobre el subconjunto
+            const filtradasPorTexto = listaBase.filter(c =>
+                c.descripcion.toLowerCase().includes(texto) ||
+                c.codigo.includes(texto)
+            );
+            
+            mostrarClaves(filtradasPorTexto);
+        });
+
+        // INICIALIZACIÓN: Muestra la lista completa al cargar la página y activa el botón "Todos"
+        filtrarPorCategoria("Todos"); 
+    </script>
+    </body>
 </html>
