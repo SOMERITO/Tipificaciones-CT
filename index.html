@@ -3,28 +3,28 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>🚒 Claves CGBVP</title>
+    <title>📋 Tipificaciones CT</title>
     
     <style>
         /* Estilos Generales */
         body {
             font-family: Arial, sans-serif;
-            background: #fff5f5; /* Fondo blanco suave con un toque rosado */
+            background: #f8f8f8; /* Fondo gris claro suave */
             text-align: center;
             margin: 0;
             padding: 20px;
         }
         h1 {
-            color: #c0392b; /* Color rojo fuerte para el título */
+            color: #2c3e50; /* Azul oscuro corporativo */
         }
         /* Estilo de la caja de búsqueda */
         input {
             width: 80%;
             padding: 10px;
-            border: 2px solid #c0392b;
+            border: 2px solid #3498db; /* Borde azul */
             border-radius: 10px;
             margin-bottom: 15px;
-            box-sizing: border-box; /* Asegura que el padding no cambie el ancho total */
+            box-sizing: border-box; 
             max-width: 600px;
             font-size: 1em;
         }
@@ -32,36 +32,36 @@
         #filtros {
             margin-bottom: 20px;
             display: flex; 
-            flex-wrap: wrap; /* Permite que los botones se envuelvan en pantallas pequeñas */
+            flex-wrap: wrap; 
             justify-content: center;
             max-width: 90%;
             margin-left: auto;
             margin-right: auto;
         }
         #filtros button {
-            background-color: #eee;
-            color: #333;
-            border: 1px solid #ccc;
+            background-color: #ecf0f1;
+            color: #34495e;
+            border: 1px solid #bdc3c7;
             padding: 8px 12px;
             margin: 4px;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.2s, color 0.2s;
+            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
             font-size: 0.85em;
             white-space: nowrap; 
         }
         /* Estilo para resaltar el botón activo */
         #filtros button.active,
         #filtros button:hover {
-            background-color: #c0392b;
+            background-color: #3498db; /* Azul */
             color: white;
-            border-color: #c0392b;
+            border-color: #2980b9;
         }
 
         /* Estilos de cada item de la lista */
         .item {
             background: white;
-            border-left: 8px solid #c0392b; /* Barra de color en el lateral */
+            border-left: 8px solid #3498db; /* Barra lateral azul */
             margin: 10px auto;
             padding: 10px;
             width: 80%;
@@ -80,196 +80,103 @@
         }
         .codigo {
             font-weight: bold;
-            color: #c0392b;
+            color: #2c3e50;
             margin-right: 10px;
             font-size: 1.1em;
         }
         .descripcion {
             font-size: 1em;
             flex-grow: 1;
+            color: #333;
         }
         .categoria-tag {
             font-size: 0.7em;
-            color: #666;
-            background: #f0f0f0;
+            color: white;
+            background: #2ecc71; /* Verde para la categoría */
             padding: 2px 6px;
             border-radius: 4px;
         }
     </style>
     </head>
 <body>
-    <h1>🚒 Claves CGBVP</h1>
+    <h1>📋 Tipificaciones CT</h1>
     
-    <input type="text" id="busqueda" placeholder="Buscar código o descripción..." />
+    <input type="text" id="busqueda" placeholder="Buscar código o tipificación..." />
 
     <div id="filtros">
         <button data-filtro="Todos" class="active">Todos</button>
-        <button data-filtro="Servicios">Servicios</button>
-        <button data-filtro="Emergencias">Emergencias</button>
-        <button data-filtro="Especiales">Especiales</button>
-        <button data-filtro="Jerarquías">Jerarquías</button>
-        <button data-filtro="Compañía">Compañía</button>
-        <button data-filtro="Nacional">Nacional</button>
-        <button data-filtro="Locales">Locales</button>
-        <button data-filtro="Personal">Personal</button>
+        <button data-filtro="INCIDENTE">INCIDENTE</button>
+        <button data-filtro="TAREA PROGRAMADA">TAREA PROGRAMADA</button>
+        <button data-filtro="TAREA NO PROGRAMADA">TAREA NO PROGRAMADA</button>
+        <button data-filtro="OPERACIONAL">OPERACIONAL</button>
+        <button data-filtro="COMERCIAL">COMERCIAL</button>
+        <button data-filtro="ADMINISTRATIVA">ADMINISTRATIVA</button>
+        <button data-filtro="INFRAESTRUCTURA">INFRAESTRUCTURA</button>
+        <button data-filtro="CALIDAD">CALIDAD</button>
     </div>
     
     <div id="lista"></div>
 
     <script>
-        // 1. DATASET COMPLETO (La lista de claves)
-        const claves = [
-            // SECCIÓN 10. SERVICIOS
-            { "codigo": "10.01", "descripcion": "Adelante", "categoria": "Servicios" },
-            { "codigo": "10.02", "descripcion": "Operador de radio identifíquese", "categoria": "Servicios" },
-            { "codigo": "10.03", "descripcion": "Cambie frecuencia radial", "categoria": "Servicios" },
-            { "codigo": "10.04", "descripcion": "Llame por teléfono", "categoria": "Servicios" },
-            { "codigo": "10.05", "descripcion": "Comprendido", "categoria": "Servicios" },
-            { "codigo": "10.06", "descripcion": "Afirmativo", "categoria": "Servicios" },
-            { "codigo": "10.07", "descripcion": "Se dirige / Diríjase", "categoria": "Servicios" },
-            { "codigo": "10.08", "descripcion": "Repita mensaje", "categoria": "Servicios" },
-            { "codigo": "10.09", "descripcion": "Negativo", "categoria": "Servicios" },
-            { "codigo": "10.10", "descripcion": "Comunicación con", "categoria": "Servicios" },
-            { "codigo": "10.11", "descripcion": "Al mando de la unidad", "categoria": "Servicios" },
-            { "codigo": "10.12", "descripcion": "Siga en escucha", "categoria": "Servicios" },
-            { "codigo": "10.13", "descripcion": "Derrotero", "categoria": "Servicios" },
-            { "codigo": "10.14", "descripcion": "Se consulta", "categoria": "Servicios" },
-            { "codigo": "10.15", "descripcion": "Efectivos", "categoria": "Servicios" },
-            { "codigo": "10.16", "descripcion": "Indique magnitud", "categoria": "Servicios" },
-            { "codigo": "10.17", "descripcion": "Informe novedades", "categoria": "Servicios" },
-            { "codigo": "10.18", "descripcion": "Dirección", "categoria": "Servicios" },
-            { "codigo": "10.19", "descripcion": "Ubicación", "categoria": "Servicios" },
-            { "codigo": "10.20", "descripcion": "En el lugar", "categoria": "Servicios" },
-            { "codigo": "10.21", "descripcion": "Línea privada", "categoria": "Servicios" },
-            { "codigo": "10.22", "descripcion": "En sintonía", "categoria": "Servicios" },
-            { "codigo": "10.23", "descripcion": "Se retira del lugar", "categoria": "Servicios" },
-            { "codigo": "10.24", "descripcion": "Urgente", "categoria": "Servicios" },
-            { "codigo": "10.25", "descripcion": "Emergencia confirmada", "categoria": "Servicios" },
-            { "codigo": "10.26", "descripcion": "En servicio", "categoria": "Servicios" },
-            { "codigo": "10.27", "descripcion": "Disponible", "categoria": "Servicios" },
-            { "codigo": "10.28", "descripcion": "Emergencia cancelada", "categoria": "Servicios" },
-            { "codigo": "10.29", "descripcion": "Continue en alerta", "categoria": "Servicios" },
-            { "codigo": "10.30", "descripcion": "Ingresa su base", "categoria": "Servicios" },
-            { "codigo": "10.31", "descripcion": "Traslado / transporte", "categoria": "Servicios" },
-            { "codigo": "10.32", "descripcion": "Emergencia en progreso", "categoria": "Servicios" },
-            { "codigo": "10.33", "descripcion": "Emergencia controlada", "categoria": "Servicios" },
-            { "codigo": "10.34", "descripcion": "Tome precauciones", "categoria": "Servicios" },
-            { "codigo": "10.35", "descripcion": "Requiere policía", "categoria": "Servicios" },
-            { "codigo": "10.36", "descripcion": "Fuera de sintonía", "categoria": "Servicios" },
-            { "codigo": "10.37", "descripcion": "Requiere empresa eléctrica", "categoria": "Servicios" },
-            { "codigo": "10.38", "descripcion": "Abastecimiento de...", "categoria": "Servicios" },
-            { "codigo": "10.39", "descripcion": "Fuera de servicio", "categoria": "Servicios" },
-            { "codigo": "10.40", "descripcion": "Espere ordenes", "categoria": "Servicios" },
-            { "codigo": "10.41", "descripcion": "Herido", "categoria": "Servicios" },
-            { "codigo": "10.42", "descripcion": "Muerto", "categoria": "Servicios" },
-            { "codigo": "10.43", "descripcion": "Herido FFAA/FFPP", "categoria": "Servicios" },
-            { "codigo": "10.44", "descripcion": "Paramédico", "categoria": "Servicios" },
-            { "codigo": "10.45", "descripcion": "Medico", "categoria": "Servicios" },
-            { "codigo": "10.46", "descripcion": "Enfermo", "categoria": "Servicios" },
-            { "codigo": "10.47", "descripcion": "No interrumpir", "categoria": "Servicios" },
-            { "codigo": "10.48", "descripcion": "Bombero piloto", "categoria": "Servicios" },
-            { "codigo": "10.49", "descripcion": "Piloto rentado", "categoria": "Servicios" },
-            { "codigo": "10.50", "descripcion": "En estado de alerta", "categoria": "Servicios" },
-            { "codigo": "10.51", "descripcion": "Parturienta", "categoria": "Servicios" },
-            { "codigo": "10.52", "descripcion": "Toque sirena", "categoria": "Servicios" },
-            { "codigo": "10.53", "descripcion": "Regrese a su base", "categoria": "Servicios" },
-            { "codigo": "10.54", "descripcion": "Prosiga la marcha", "categoria": "Servicios" },
-            { "codigo": "10.55", "descripcion": "Requiere de empresa de saneamiento", "categoria": "Servicios" },
-            { "codigo": "10.56", "descripcion": "Deje sin efecto", "categoria": "Servicios" },
-            { "codigo": "10.57", "descripcion": "Utilice claves", "categoria": "Servicios" },
-            { "codigo": "10.58", "descripcion": "Fin de estado de alerta", "categoria": "Servicios" },
-            { "codigo": "10.59", "descripcion": "Guardia nocturna", "categoria": "Servicios" },
-            { "codigo": "10.60", "descripcion": "Tipo de emergencia", "categoria": "Servicios" },
-
-            // SECCIÓN 20. EMERGENCIAS
-            { "codigo": "20.01", "descripcion": "Efectivo CGBVP accidentado", "categoria": "Emergencias" },
-            { "codigo": "20.02", "descripcion": "Vehículo CGBVP accidentado", "categoria": "Emergencias" },
-            { "codigo": "20.03", "descripcion": "Atentado/artefacto explosivo", "categoria": "Emergencias" },
-            { "codigo": "20.04", "descripcion": "Atropellado", "categoria": "Emergencias" },
-            { "codigo": "20.05", "descripcion": "Ascensor atrapado", "categoria": "Emergencias" },
-            { "codigo": "20.06", "descripcion": "Inundación", "categoria": "Emergencias" },
-            { "codigo": "20.07", "descripcion": "Falsa Alarma", "categoria": "Emergencias" },
-            { "codigo": "20.08", "descripcion": "Incendio vehicular", "categoria": "Emergencias" },
-            { "codigo": "20.09", "descripcion": "Derrumbe", "categoria": "Emergencias" },
-            { "codigo": "20.10", "descripcion": "Derrame producto ¿?", "categoria": "Emergencias" },
-            { "codigo": "20.11", "descripcion": "Material peligros-indique", "categoria": "Emergencias" },
-            { "codigo": "20.12", "descripcion": "Fuga de gas", "categoria": "Emergencias" },
-            { "codigo": "20.13", "descripcion": "Grifo/cisterna", "categoria": "Emergencias" },
-            { "codigo": "20.14", "descripcion": "Incendio/no apoyo", "categoria": "Emergencias" },
-            { "codigo": "20.15", "descripcion": "Incendio/1 unidad de apoyo", "categoria": "Emergencias" },
-            { "codigo": "20.16", "descripcion": "Incendio/2 unidad de apoyo", "categoria": "Emergencias" },
-            { "codigo": "20.17", "descripcion": "Incendio/+2 unidad de apoyo", "categoria": "Emergencias" },
-            { "codigo": "20.18", "descripcion": "Incendio/+3 unidad de apoyo", "categoria": "Emergencias" },
-            { "codigo": "20.19", "descripcion": "Catástrofe-orden 7.11-7.12", "categoria": "Emergencias" },
-            { "codigo": "20.20", "descripcion": "Incendio forestal", "categoria": "Emergencias" },
-            { "codigo": "20.21", "descripcion": "Incendio terreno baldío", "categoria": "Emergencias" },
-            { "codigo": "20.22", "descripcion": "Corto circuito", "categoria": "Emergencias" },
-            { "codigo": "20.23", "descripcion": "Accidente vehicular", "categoria": "Emergencias" },
-            { "codigo": "20.24", "descripcion": "Rescate /Atrapados", "categoria": "Emergencias" },
-            { "codigo": "20.25", "descripcion": "Huayco/Erupción volcánica", "categoria": "Emergencias" },
-            { "codigo": "20.26", "descripcion": "Evacuación/Fumigación", "categoria": "Emergencias" },
-            { "codigo": "20.27", "descripcion": "Poste eléctrico/aviso luminoso", "categoria": "Emergencias" },
-
-            // SECCIÓN 30. SERVICIOS ESPECIALES
-            { "codigo": "30.30", "descripcion": "Otro servicio/Servicio especial", "categoria": "Especiales" },
-            { "codigo": "30.31", "descripcion": "Practicas/charlas/simulacros/ceremonias", "categoria": "Especiales" },
-            { "codigo": "30.32", "descripcion": "Eventos/conciertos/festivales", "categoria": "Especiales" },
-            { "codigo": "30.33", "descripcion": "Abrir puertas", "categoria": "Especiales" },
-            { "codigo": "30.34", "descripcion": "Colocar letreros/pancartas", "categoria": "Especiales" },
-            { "codigo": "30.35", "descripcion": "Velorio/Entierro", "categoria": "Especiales" },
-            { "codigo": "30.36", "descripcion": "Apoyos sociales (servicios de agua/vacunación)", "categoria": "Especiales" },
-
-            // SECCIÓN 3. JERARQUÍAS
-            { "codigo": "3.01", "descripcion": "Brigadier General", "categoria": "Jerarquías" },
-            { "codigo": "3.02", "descripcion": "Brigadier Mayor", "categoria": "Jerarquías" },
-            { "codigo": "3.03", "descripcion": "Brigadier", "categoria": "Jerarquías" },
-            { "codigo": "3.04", "descripcion": "Teniente brigadier", "categoria": "Jerarquías" },
-            { "codigo": "3.05", "descripcion": "Capitán", "categoria": "Jerarquías" },
-            { "codigo": "3.06", "descripcion": "Teniente", "categoria": "Jerarquías" },
-            { "codigo": "3.07", "descripcion": "sub. teniente", "categoria": "Jerarquías" },
-            { "codigo": "3.08", "descripcion": "Seccionario", "categoria": "Jerarquías" },
-            { "codigo": "3.09", "descripcion": "Alumno", "categoria": "Jerarquías" },
-
-            // SECCIÓN 7. COMANDO REGIONAL (Nacional)
-            { "codigo": "7.11", "descripcion": "Comandante regional", "categoria": "Nacional" },
-            { "codigo": "7.12", "descripcion": "Vice Comandante regional", "categoria": "Nacional" },
-            { "codigo": "7.13", "descripcion": "Inspector regional", "categoria": "Nacional" },
-            { "codigo": "7.14", "descripcion": "Presidente del concejo de disciplina", "categoria": "Nacional" },
-            { "codigo": "7.16", "descripcion": "Jefe de brigada", "categoria": "Nacional" },
-            { "codigo": "7.17", "descripcion": "Jefe de personal", "categoria": "Nacional" },
-            { "codigo": "7.19", "descripcion": "Jefe de logística y mantenimiento", "categoria": "Nacional" },
-            { "codigo": "7.21", "descripcion": "Jefe de técnica", "categoria": "Nacional" },
-            { "codigo": "7.22", "descripcion": "Jefe de sanidad regional", "categoria": "Nacional" },
-            { "codigo": "7.25", "descripcion": "Jefe de RRPP", "categoria": "Nacional" },
-
-            // SECCIÓN 30. COMPAÑÍA (Jefaturas)
-            { "codigo": "30.11", "descripcion": "Primer jefe de compañía", "categoria": "Compañía" },
-            { "codigo": "33.12", "descripcion": "Segundo jefe de compañía", "categoria": "Compañía" },
-            { "codigo": "30.13", "descripcion": "Jefe de operaciones emergencias", "categoria": "Compañía" },
-            { "codigo": "30.14", "descripcion": "Jefe operación 1", "categoria": "Compañía" },
-            { "codigo": "30.15", "descripcion": "Jefe de operaciones 2", "categoria": "Compañía" },
-            { "codigo": "30.16", "descripcion": "Jefe de operaciones 3", "categoria": "Compañía" },
-            { "codigo": "30.17", "descripcion": "Jefe de administración", "categoria": "Compañía" },
-            { "codigo": "30.18", "descripcion": "Jefe de servicio", "categoria": "Compañía" },
-            { "codigo": "30.19", "descripcion": "Jefe de disciplina", "categoria": "Compañía" },
-            { "codigo": "30.22", "descripcion": "Medico de turno", "categoria": "Compañía" },
-
-            // SECCIÓN X. LOCALES
-            { "codigo": "X6", "descripcion": "Comando regional", "categoria": "Locales" },
-            { "codigo": "X7", "descripcion": "Cuartel de compañía", "categoria": "Locales" },
-            { "codigo": "X14", "descripcion": "Domicilio", "categoria": "Locales" },
-            { "codigo": "X15", "descripcion": "Centro de trabajo", "categoria": "Locales" },
-
-            // SECCIÓN 1. PERSONAL RENTADO (Personal)
-            { "codigo": "1.01", "descripcion": "Contador", "categoria": "Personal" },
-            { "codigo": "1.02", "descripcion": "Secretaria", "categoria": "Personal" },
-            { "codigo": "1.03", "descripcion": "Auxiliar de secretaria", "categoria": "Personal" },
-            { "codigo": "1.04", "descripcion": "Chofer cuartelero", "categoria": "Personal" },
-            { "codigo": "1.05", "descripcion": "Cuartelero", "categoria": "Personal" },
-            { "codigo": "1.06", "descripcion": "Operador de radio", "categoria": "Personal" },
-            { "codigo": "1.07", "descripcion": "Obrero", "categoria": "Personal" },
-            { "codigo": "1.08", "descripcion": "Conserje", "categoria": "Personal" },
-            { "codigo": "1.09", "descripcion": "Practicante", "categoria": "Personal" }
+        // 1. DATASET COMPLETO (La lista de tipificaciones de tu hoja de cálculo)
+        const tipificaciones = [
+            {"codigo":"TP-01","tipificacion":"Cruce de Vías","categoria":"INCIDENTE"},
+            {"codigo":"TP-02","tipificacion":"Ingreso y salida de unidades a Base/Sede","categoria":"INCIDENTE"},
+            {"codigo":"TP-03","tipificacion":"Despacho de Unidades (Servicio, Apoyo)","categoria":"INCIDENTE"},
+            {"codigo":"TP-04","tipificacion":"Retorno de Unidades","categoria":"INCIDENTE"},
+            {"codigo":"TP-05","tipificacion":"Avería / Desperfecto de unidades","categoria":"INCIDENTE"},
+            {"codigo":"TP-06","tipificacion":"Emergencias (Apoyo Policía, Mantenimiento, etc)","categoria":"INCIDENTE"},
+            {"codigo":"TP-07","tipificacion":"Accidente con unidad","categoria":"INCIDENTE"},
+            {"codigo":"TP-08","tipificacion":"Corte de Energía","categoria":"INCIDENTE"},
+            {"codigo":"TP-09","tipificacion":"Cierre de Vía","categoria":"INCIDENTE"},
+            {"codigo":"TP-10","tipificacion":"Apertura de Vía","categoria":"INCIDENTE"},
+            {"codigo":"TP-11","tipificacion":"Traslado de equipos / Personal","categoria":"TAREA PROGRAMADA"},
+            {"codigo":"TP-12","tipificacion":"Abastecimiento de combustible","categoria":"TAREA PROGRAMADA"},
+            {"codigo":"TP-13","tipificacion":"Entrega de Materiales","categoria":"TAREA PROGRAMADA"},
+            {"codigo":"TP-14","tipificacion":"Entrega de Uniformes","categoria":"TAREA PROGRAMADA"},
+            {"codigo":"TP-15","tipificacion":"Retorno de materiales / Equipos","categoria":"TAREA PROGRAMADA"},
+            {"codigo":"TP-16","tipificacion":"Activación de Generadores (pruebas)","categoria":"TAREA PROGRAMADA"},
+            {"codigo":"TP-17","tipificacion":"Instalación de dispositivos GPS","categoria":"TAREA PROGRAMADA"},
+            {"codigo":"TP-18","tipificacion":"Instalación de Equipos de comunicación (Radios, etc)","categoria":"TAREA PROGRAMADA"},
+            {"codigo":"TP-19","tipificacion":"Traslado de unidades (mantenimiento, reparación, base/sede)","categoria":"TAREA PROGRAMADA"},
+            {"codigo":"TP-20","tipificacion":"Lavado de unidades","categoria":"TAREA PROGRAMADA"},
+            {"codigo":"TP-21","tipificacion":"Inspección / Mantenimiento preventivo de unidades","categoria":"TAREA PROGRAMADA"},
+            {"codigo":"TP-22","tipificacion":"Reuniones / Cursos / Capacitaciones","categoria":"TAREA PROGRAMADA"},
+            {"codigo":"TP-23","tipificacion":"Entrega de documentos / Especies valoradas","categoria":"TAREA PROGRAMADA"},
+            {"codigo":"TP-24","tipificacion":"Recojo de documentos / Especies valoradas","categoria":"TAREA PROGRAMADA"},
+            {"codigo":"TP-25","tipificacion":"Limpieza de garita / Base / Sede","categoria":"TAREA PROGRAMADA"},
+            {"codigo":"TP-26","tipificacion":"Pruebas de luces / sirenas / altavoz","categoria":"TAREA PROGRAMADA"},
+            {"codigo":"TP-27","tipificacion":"Activación de luces de emergencia","categoria":"TAREA NO PROGRAMADA"},
+            {"codigo":"TP-28","tipificacion":"Ingreso de Personal","categoria":"TAREA NO PROGRAMADA"},
+            {"codigo":"TP-29","tipificacion":"Salida de Personal","categoria":"TAREA NO PROGRAMADA"},
+            {"codigo":"TP-30","tipificacion":"Revisión de Personal","categoria":"TAREA NO PROGRAMADA"},
+            {"codigo":"TP-31","tipificacion":"Personal Ausente (Falta de marcación)","categoria":"TAREA NO PROGRAMADA"},
+            {"codigo":"TP-32","tipificacion":"Entrega de llaves","categoria":"TAREA NO PROGRAMADA"},
+            {"codigo":"TP-33","tipificacion":"Recojo de llaves","categoria":"TAREA NO PROGRAMADA"},
+            {"codigo":"TP-34","tipificacion":"Activación de Generador (Fallo de energía)","categoria":"TAREA NO PROGRAMADA"},
+            {"codigo":"TP-35","tipificacion":"Activación de Generador (Mantenimiento)","categoria":"TAREA NO PROGRAMADA"},
+            {"codigo":"TP-36","tipificacion":"Entrega de Repuestos","categoria":"OPERACIONAL"},
+            {"codigo":"TP-37","tipificacion":"Entrega de Materiales","categoria":"OPERACIONAL"},
+            {"codigo":"TP-38","tipificacion":"Traslado de Repuestos","categoria":"OPERACIONAL"},
+            {"codigo":"TP-39","tipificacion":"Traslado de Materiales","categoria":"OPERACIONAL"},
+            {"codigo":"TP-40","tipificacion":"Entrega de unidades","categoria":"OPERACIONAL"},
+            {"codigo":"TP-41","tipificacion":"Revisión de unidades","categoria":"OPERACIONAL"},
+            {"codigo":"TP-42","tipificacion":"Cruce de Vías","categoria":"OPERACIONAL"},
+            {"codigo":"TP-43","tipificacion":"Control de Unidades","categoria":"OPERACIONAL"},
+            {"codigo":"TP-44","tipificacion":"Despacho / Asignación de servicios","categoria":"COMERCIAL"},
+            {"codigo":"TP-45","tipificacion":"Cambio de servicios","categoria":"COMERCIAL"},
+            {"codigo":"TP-46","tipificacion":"Anulación de servicios","categoria":"COMERCIAL"},
+            {"codigo":"TP-47","tipificacion":"Cambio de personal","categoria":"ADMINISTRATIVA"},
+            {"codigo":"TP-48","tipificacion":"Solicitud de información","categoria":"ADMINISTRATIVA"},
+            {"codigo":"TP-49","tipificacion":"Información de eventos / Averías","categoria":"ADMINISTRATIVA"},
+            {"codigo":"TP-50","tipificacion":"Solicitud de reportes","categoria":"ADMINISTRATIVA"},
+            {"codigo":"TP-51","tipificacion":"Entrega de equipos (PC, Radio, etc)","categoria":"INFRAESTRUCTURA"},
+            {"codigo":"TP-52","tipificacion":"Instalación de equipos (PC, Radio, etc)","categoria":"INFRAESTRUCTURA"},
+            {"codigo":"TP-53","tipificacion":"Soporte / Mantenimiento de equipos","categoria":"INFRAESTRUCTURA"},
+            {"codigo":"TP-54","tipificacion":"Falla de comunicación / sistema","categoria":"INFRAESTRUCTURA"},
+            {"codigo":"TP-55","tipificacion":"Entrega / Recepción de unidades","categoria":"CALIDAD"},
+            {"codigo":"TP-56","tipificacion":"Inspección de calidad","categoria":"CALIDAD"},
+            {"codigo":"TP-57","tipificacion":"Revisión de unidades (Check list, etc)","categoria":"CALIDAD"}
         ];
 
         // 2. OBTENER ELEMENTOS DEL DOM
@@ -280,19 +187,19 @@
         let categoriaActiva = "Todos"; // Controla qué segmento está seleccionado
 
         // 3. FUNCIÓN PARA DIBUJAR LA LISTA
-        function mostrarClaves(filtradas) {
+        function mostrarTipificaciones(filtradas) {
             lista.innerHTML = ""; // Limpiar la lista actual
             filtradas.forEach(c => {
                 const div = document.createElement("div");
                 div.classList.add("item");
                 
-                // Crea la estructura de la clave
+                // Crea la estructura usando CÓDIGO, TIPIFICACIÓN y CATEGORIA
                 div.innerHTML = `
                     <div class="item-header">
                         <span class="codigo">${c.codigo}</span>
                         <span class="categoria-tag">${c.categoria}</span>
                     </div>
-                    <span class="descripcion">${c.descripcion}</span>
+                    <span class="descripcion">${c.tipificacion}</span>
                 `;
                 lista.appendChild(div);
             });
@@ -300,15 +207,15 @@
 
         // 4. FUNCIÓN MAESTRA DE SEGMENTACIÓN (FILTRADO POR CATEGORÍA)
         function filtrarPorCategoria(categoria) {
-            let listaResultado = claves; // Empezamos con el conjunto completo
+            let listaResultado = tipificaciones; 
 
             // Si la categoría NO es "Todos", usamos .filter() para segmentar el conjunto
             if (categoria !== "Todos") {
-                listaResultado = claves.filter(clave => clave.categoria === categoria);
+                listaResultado = tipificaciones.filter(tipi => tipi.categoria === categoria);
             }
 
             // Muestra los resultados segmentados
-            mostrarClaves(listaResultado);
+            mostrarTipificaciones(listaResultado);
             
             // Actualiza el estilo del botón activo
             document.querySelectorAll('#filtros button').forEach(btn => {
@@ -334,21 +241,21 @@
             const texto = input.value.toLowerCase();
             
             // 6.1. Define el subconjunto base (la lista completa o la lista ya segmentada)
-            let listaBase = claves;
+            let listaBase = tipificaciones;
             if (categoriaActiva !== "Todos") {
-                listaBase = claves.filter(clave => clave.categoria === categoriaActiva);
+                listaBase = tipificaciones.filter(tipi => tipi.categoria === categoriaActiva);
             }
 
-            // 6.2. Aplica el filtro de texto sobre el subconjunto
+            // 6.2. Aplica el filtro de texto sobre el subconjunto (busca en CÓDIGO y TIPIFICACIÓN)
             const filtradasPorTexto = listaBase.filter(c =>
-                c.descripcion.toLowerCase().includes(texto) ||
-                c.codigo.includes(texto)
+                c.tipificacion.toLowerCase().includes(texto) ||
+                c.codigo.toLowerCase().includes(texto)
             );
             
-            mostrarClaves(filtradasPorTexto);
+            mostrarTipificaciones(filtradasPorTexto);
         });
 
-        // INICIALIZACIÓN: Muestra la lista completa al cargar la página y activa el botón "Todos"
+        // INICIALIZACIÓN: Muestra la lista completa al cargar la página
         filtrarPorCategoria("Todos"); 
     </script>
     </body>
