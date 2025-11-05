@@ -107,12 +107,16 @@
     </style>
     </head>
 <body>
-    <h1>💡 Tipificaciones CT</h1>
+    <h1>💡 Buscador de Trámites UPC</h1>
     
     <input type="text" id="busqueda" placeholder="Buscar por trámite o pasos..." />
 
     <div id="filtros">
-        <button data-filtro="TRÁMITES">TRÁMITES</button>
+        <button data-filtro="Todos" class="active">Todos</button>
+        <button data-filtro="EVALUACIONES">Evaluaciones</button>
+        <button data-filtro="CERTIFICADOS">Certificados/Diplomas</button>
+        <button data-filtro="FINANCIERO">Financiero</button>
+        <button data-filtro="GENERAL">Consultas Generales</button>
     </div>
     
     <div id="lista"></div>
@@ -120,11 +124,53 @@
     <script>
         // 1. DATASET COMPLETO (La lista de trámites y respuestas)
         const tramites = [
-            {
-                "codigo": "RETIRO DE CICLO - PASOS", 
-                "tipificacion": "Solicita información sobre trámite de Retiro de Ciclo / Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC.", 
-                "respuesta": "Trámites > Retiro de ciclo > Fechas e información clave del proceso",
-                "categoria": "TRÁMITES"
+            { 
+                "codigo": "EMISIÓN DE DOC. EN FÍSICO", 
+                "tipificacion": "Consulta si se podría brindar constancias o certificados en físico", 
+                "respuesta": "Se indica que por el momento no se brindan documentos en físico.", 
+                "categoria": "GENERAL"
+            },
+            { 
+                "codigo": "DEVOLUCIÓN DE PAGOS", 
+                "tipificacion": "Solicita los pasos a seguir para poder generar solicitud de Devolución de Pagos", 
+                "respuesta": "Se brindan los pasos a seguir, plazo de atención y cómo poder obtener mayores detalles a través de Explora UPC.", 
+                "categoria": "FINANCIERO"
+            },
+            { 
+                "codigo": "SUBSANACIÓN DE EVALUACIÓN", 
+                "tipificacion": "Solicita los pasos a seguir para poder generar solicitud de Subsanación de Evaluaciones", 
+                "respuesta": "Se brindan los puntos de consideración, fechas disponibles, plazo de atención, costo y se comparte link de Explora UPC para que pueda obtener mayor información al respecto.", 
+                "categoria": "EVALUACIONES"
+            },
+            { 
+                "codigo": "COPIA CERTIFICADA VIRTUAL DE DIPLOMA DE BACHILLER O TÍTULO PROFESIONAL", 
+                "tipificacion": "Solicita información sobre trámite de Copia Certificada Virtual", 
+                "respuesta": "Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC.", 
+                "categoria": "CERTIFICADOS"
+            },
+            { 
+                "codigo": "RECUPERACIÓN DE EVALUACIÓN", 
+                "tipificacion": "Solicita los pasos a seguir para poder generar solicitud de Recuperación de Evaluación", 
+                "respuesta": "Se brindan los puntos de consideración, fechas disponibles, plazo de atención, costo y se comparte link de Explora UPC para que pueda obtener mayor información al respecto.", 
+                "categoria": "EVALUACIONES"
+            },
+            { 
+                "codigo": "CERTIFICADO DE ESTUDIOS - FIRMA DIGITAL", 
+                "tipificacion": "Solicita información sobre trámite de Certificado de Estudios - Firma Digital", 
+                "respuesta": "Se brinda información sobre el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC.", 
+                "categoria": "CERTIFICADOS"
+            },
+            { 
+                "codigo": "CERTIFICADO DE ESTUDIOS - FIRMA ELECTRÓNICA", 
+                "tipificacion": "Solicita información sobre trámite de Certificado de Estudios - Firma Electrónica", 
+                "respuesta": "Se brinda información sobre el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC.", 
+                "categoria": "CERTIFICADOS"
+            },
+            { 
+                "codigo": "EMISIÓN DE SÍLABO", 
+                "tipificacion": "Solicita información sobre trámite de Emisión de Sílabo", 
+                "respuesta": "Se brinda información sobre el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC.", 
+                "categoria": "CERTIFICADOS" 
             }
         ];
 
@@ -133,11 +179,11 @@
         const lista = document.getElementById("lista");
         const contenedorFiltros = document.getElementById("filtros");
 
-        let categoriaActiva = "Todos"; // Controla qué segmento está seleccionado
+        let categoriaActiva = "Todos"; 
 
         // 3. FUNCIÓN PARA DIBUJAR LA LISTA
         function mostrarTramites(filtradas) {
-            lista.innerHTML = ""; // Limpiar la lista actual
+            lista.innerHTML = ""; 
             if (filtradas.length === 0) {
                  lista.innerHTML = '<p style="text-align:center; color:#999; margin-top:30px;">No se encontraron resultados para la búsqueda o filtro.</p>';
                  return;
@@ -146,14 +192,13 @@
                 const div = document.createElement("div");
                 div.classList.add("item");
                 
-                // Crea la estructura usando las nuevas propiedades
                 div.innerHTML = `
                     <div class="item-header">
                         <span class="codigo">${c.codigo}</span>
                         <span class="categoria-tag">${c.categoria}</span>
                     </div>
-                    <span class="tipificacion">Tipificación: ${c.tipificacion}</span>
-                    <span class="respuesta">Ruta para tipificar: ${c.respuesta}</span>
+                    <span class="tipificacion">**Consulta:** ${c.tipificacion}</span>
+                    <span class="respuesta">**Respuesta/Pasos:** ${c.respuesta}</span>
                 `;
                 lista.appendChild(div);
             });
@@ -163,21 +208,17 @@
         function filtrarPorCategoria(categoria) {
             let listaResultado = tramites; 
 
-            // Segmentamos el conjunto
             if (categoria !== "Todos") {
                 listaResultado = tramites.filter(tramite => tramite.categoria === categoria);
             }
 
-            // Muestra los resultados segmentados
             mostrarTramites(listaResultado);
             
-            // Actualiza el estilo del botón activo
             document.querySelectorAll('#filtros button').forEach(btn => {
                 btn.classList.remove('active');
             });
             document.querySelector(`[data-filtro="${categoria}"]`).classList.add('active');
             
-            // Guarda la categoría activa para la búsqueda por texto
             categoriaActiva = categoria; 
         }
 
@@ -185,7 +226,7 @@
         contenedorFiltros.addEventListener("click", (evento) => {
             if (evento.target.tagName === 'BUTTON' && evento.target.dataset.filtro) {
                 const categoriaSeleccionada = evento.target.dataset.filtro;
-                input.value = ""; // Limpia la búsqueda al cambiar de filtro
+                input.value = ""; 
                 filtrarPorCategoria(categoriaSeleccionada);
             }
         });
@@ -194,13 +235,11 @@
         input.addEventListener("input", () => {
             const texto = input.value.toLowerCase();
             
-            // 6.1. Define el subconjunto base (la lista completa o la lista ya segmentada)
             let listaBase = tramites;
             if (categoriaActiva !== "Todos") {
                 listaBase = tramites.filter(tramite => tramite.categoria === categoriaActiva);
             }
 
-            // 6.2. Aplica el filtro de texto sobre el subconjunto (busca en CÓDIGO, TIPIFICACIÓN y RESPUESTA)
             const filtradasPorTexto = listaBase.filter(c =>
                 c.codigo.toLowerCase().includes(texto) ||
                 c.tipificacion.toLowerCase().includes(texto) ||
@@ -209,6 +248,16 @@
             
             mostrarTramites(filtradasPorTexto);
         });
+        
+        // 7. EVENTO DE TECLADO PARA FOCALIZAR EL BUSCADOR (CTRL + F)
+        document.addEventListener('keydown', (e) => {
+            // Verifica que sea la tecla 'f' y que se presione Ctrl o Cmd (Meta)
+            if (e.key === 'f' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault(); // Detiene el comportamiento de búsqueda del navegador
+                input.focus();      // Mueve el foco a la caja de búsqueda
+            }
+        });
+
 
         // INICIALIZACIÓN: Muestra la lista completa al cargar la página
         filtrarPorCategoria("Todos"); 
