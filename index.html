@@ -169,7 +169,7 @@
             { 
                 "codigo": "RETIRO DE CICLO - PASOSX", 
                 "tipificacion": "Solicita información sobre trámite de Retiro de Ciclo / Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC.", 
-                "Ruta de Tipificación": "Trámites > Retiro de ciclo > Fechas e información clave del proceso",
+                "respuesta": "Trámites > Retiro de ciclo > Fechas e información clave del proceso",
                 "categoria": "TRÁMITESXXXXX" // Aunque es un documento, lo agrupamos con Certificados por ser trámites documentarios
             },
             {
@@ -205,7 +205,7 @@
                         <span class="categoria-tag">${c.categoria}</span>
                     </div>
                     <span class="tipificacion">**Consulta:** ${c.tipificacion}</span>
-                    <span class="respuesta">**Respuesta/Pasos:** ${c.respuesta}</span>
+                    <span class="respuesta">Ruta para tipificar: ${c.respuesta}</span>
                 `;
                 lista.appendChild(div);
             });
