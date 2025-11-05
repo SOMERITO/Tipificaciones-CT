@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Buscador de Tipificaciones</title>
+    <style>
+        /* Estilos CSS sencillos para que se vea mejor */
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        #busquedaInput { padding: 10px; width: 80%; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; }
+        .resaltar { background-color: yellow; } /* Clase para resaltar resultados */
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #38761d; color: white; }
+    </style>
+</head>
+<body>
+
+    <h1>🔍 Buscador Interactivo de Tipificaciones</h1>
+
+    <input type="text" id="busquedaInput" onkeyup="filtrarTabla()" placeholder="Escribe aquí el Título, Detalle o Ruta...">
+    
+    <hr>
+
+    <table id="tablaTipificaciones">
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th>Detalle de Tipificación</th>
+                <th>Ruta de Tipificación</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>RETIRO DE CICLO - PASOS</td>
+                <td>Solicita información sobre trámite de Retiro de Ciclo / Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC.</td>
+                <td>Trámites > Retiro de ciclo > Fechas e información clave del proceso</td>
+            </tr>
+            <tr>
+                <td>SOLICITUD DE CRÉDITOS EXTRAS</td>
+                <td>Consulta si es posible matricularse en 25 créditos en lugar de 22, indica que desea llevar un curso extra. Se le explica el proceso de solicitud y requisitos.</td>
+                <td>Trámites > Matrícula > Límite de créditos</td>
+            </tr>
+            </tbody>
+    </table>
+
+    <script>
+        // ¡Aquí viene la magia de JavaScript para que el buscador funcione!
+        function filtrarTabla() {
+            // Declaración de variables
+            var input, filtro, tabla, tr, td, i, j, textoValor;
+            input = document.getElementById("busquedaInput");
+            // Convierte el texto de búsqueda a mayúsculas para no distinguir entre mayúsculas y minúsculas
+            filtro = input.value.toUpperCase();
+            tabla = document.getElementById("tablaTipificaciones");
+            tr = tabla.getElementsByTagName("tr");
+
+            // Recorre todas las filas de la tabla, excepto la cabecera (i=1)
+            for (i = 1; i < tr.length; i++) {
+                // Por defecto, asumimos que la fila no coincide
+                let encontrado = false;
+                
+                // Recorre las 3 celdas (Título, Detalle, Ruta) de la fila actual
+                for (j = 0; j < 3; j++) {
+                    td = tr[i].getElementsByTagName("td")[j];
+                    if (td) {
+                        textoValor = td.textContent || td.innerText;
+                        
+                        // Busca si el texto de la celda contiene lo que escribimos en el filtro
+                        if (textoValor.toUpperCase().indexOf(filtro) > -1) {
+                            encontrado = true;
+                            // Opcional: Resalta la palabra encontrada en la celda
+                            // Esta parte es avanzada, por ahora solo mostramos/ocultamos la fila.
+                        }
+                    }
+                }
+
+                // Muestra la fila (display: "") si se encontró la palabra en alguna de sus 3 celdas.
+                if (encontrado) {
+                    tr[i].style.display = "";
+                } else {
+                    // Oculta la fila (display: "none") si no se encontró en ninguna celda.
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    </script>
+
+</body>
+</html>
