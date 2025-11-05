@@ -236,4 +236,28 @@
             }
         });
 
-        // 6.
+        // 6. EVENTO PARA LA BÚSQUEDA POR TEXTO (INPUT)
+        input.addEventListener("input", () => {
+            const texto = input.value.toLowerCase();
+            
+            // 6.1. Define el subconjunto base (la lista completa o la lista ya segmentada)
+            let listaBase = tramites;
+            if (categoriaActiva !== "Todos") {
+                listaBase = tramites.filter(tramite => tramite.categoria === categoriaActiva);
+            }
+
+            // 6.2. Aplica el filtro de texto sobre el subconjunto (busca en CÓDIGO, TIPIFICACIÓN y RESPUESTA)
+            const filtradasPorTexto = listaBase.filter(c =>
+                c.codigo.toLowerCase().includes(texto) ||
+                c.tipificacion.toLowerCase().includes(texto) ||
+                c.respuesta.toLowerCase().includes(texto)
+            );
+            
+            mostrarTramites(filtradasPorTexto);
+        });
+
+        // INICIALIZACIÓN: Muestra la lista completa al cargar la página
+        filtrarPorCategoria("Todos"); 
+    </script>
+    </body>
+</html>
