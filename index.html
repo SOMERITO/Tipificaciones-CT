@@ -3,29 +3,29 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>📋 Tipificaciones CT</title>
+    <title>💡 Trámites y Consultas UPC</title>
     
     <style>
         /* Estilos Generales */
         body {
-            font-family: Arial, sans-serif;
-            background: #f8f8f8; /* Fondo gris claro suave */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f4f4f9; /* Fondo muy claro */
             text-align: center;
             margin: 0;
             padding: 20px;
         }
         h1 {
-            color: #2c3e50; /* Azul oscuro corporativo */
+            color: #7900b9; /* Color similar al morado UPC */
         }
         /* Estilo de la caja de búsqueda */
         input {
             width: 80%;
             padding: 10px;
-            border: 2px solid #3498db; /* Borde azul */
+            border: 2px solid #7900b9; 
             border-radius: 10px;
             margin-bottom: 15px;
             box-sizing: border-box; 
-            max-width: 600px;
+            max-width: 700px;
             font-size: 1em;
         }
         /* Estilos para la barra de filtros */
@@ -39,9 +39,9 @@
             margin-right: auto;
         }
         #filtros button {
-            background-color: #ecf0f1;
-            color: #34495e;
-            border: 1px solid #bdc3c7;
+            background-color: #e5e0f5;
+            color: #38005b;
+            border: 1px solid #c0b5e8;
             padding: 8px 12px;
             margin: 4px;
             border-radius: 5px;
@@ -53,130 +53,125 @@
         /* Estilo para resaltar el botón activo */
         #filtros button.active,
         #filtros button:hover {
-            background-color: #3498db; /* Azul */
+            background-color: #7900b9;
             color: white;
-            border-color: #2980b9;
+            border-color: #5d008f;
         }
 
         /* Estilos de cada item de la lista */
         .item {
             background: white;
-            border-left: 8px solid #3498db; /* Barra lateral azul */
+            border-left: 8px solid #7900b9; /* Barra lateral morada */
             margin: 10px auto;
-            padding: 10px;
+            padding: 15px;
             width: 80%;
-            max-width: 600px;
+            max-width: 700px;
             border-radius: 8px;
             text-align: left;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
         .item-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
         }
         .codigo {
             font-weight: bold;
-            color: #2c3e50;
+            color: #7900b9;
             margin-right: 10px;
-            font-size: 1.1em;
-        }
-        .descripcion {
-            font-size: 1em;
-            flex-grow: 1;
-            color: #333;
+            font-size: 1.2em;
         }
         .categoria-tag {
             font-size: 0.7em;
             color: white;
-            background: #2ecc71; /* Verde para la categoría */
-            padding: 2px 6px;
+            background: #3498db; /* Azul para la categoría */
+            padding: 4px 8px;
             border-radius: 4px;
+            font-weight: 600;
+        }
+        .tipificacion {
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+        .respuesta {
+            font-size: 1em;
+            color: #333;
+            padding-top: 5px;
+            border-top: 1px dashed #eee;
         }
     </style>
     </head>
 <body>
-    <h1>📋 Tipificaciones CT</h1>
+    <h1>💡 Buscador de Trámites UPC</h1>
     
-    <input type="text" id="busqueda" placeholder="Buscar código o tipificación..." />
+    <input type="text" id="busqueda" placeholder="Buscar por trámite o pasos..." />
 
     <div id="filtros">
         <button data-filtro="Todos" class="active">Todos</button>
-        <button data-filtro="INCIDENTE">INCIDENTE</button>
-        <button data-filtro="TAREA PROGRAMADA">TAREA PROGRAMADA</button>
-        <button data-filtro="TAREA NO PROGRAMADA">TAREA NO PROGRAMADA</button>
-        <button data-filtro="OPERACIONAL">OPERACIONAL</button>
-        <button data-filtro="COMERCIAL">COMERCIAL</button>
-        <button data-filtro="ADMINISTRATIVA">ADMINISTRATIVA</button>
-        <button data-filtro="INFRAESTRUCTURA">INFRAESTRUCTURA</button>
-        <button data-filtro="CALIDAD">CALIDAD</button>
+        <button data-filtro="EVALUACIONES">Evaluaciones</button>
+        <button data-filtro="CERTIFICADOS">Certificados/Diplomas</button>
+        <button data-filtro="FINANCIERO">Financiero</button>
+        <button data-filtro="GENERAL">Consultas Generales</button>
     </div>
     
     <div id="lista"></div>
 
     <script>
-        // 1. DATASET COMPLETO (La lista de tipificaciones de tu hoja de cálculo)
-        const tipificaciones = [
-            {"codigo":"TP-01","tipificacion":"Cruce de Vías","categoria":"INCIDENTE"},
-            {"codigo":"TP-02","tipificacion":"Ingreso y salida de unidades a Base/Sede","categoria":"INCIDENTE"},
-            {"codigo":"TP-03","tipificacion":"Despacho de Unidades (Servicio, Apoyo)","categoria":"INCIDENTE"},
-            {"codigo":"TP-04","tipificacion":"Retorno de Unidades","categoria":"INCIDENTE"},
-            {"codigo":"TP-05","tipificacion":"Avería / Desperfecto de unidades","categoria":"INCIDENTE"},
-            {"codigo":"TP-06","tipificacion":"Emergencias (Apoyo Policía, Mantenimiento, etc)","categoria":"INCIDENTE"},
-            {"codigo":"TP-07","tipificacion":"Accidente con unidad","categoria":"INCIDENTE"},
-            {"codigo":"TP-08","tipificacion":"Corte de Energía","categoria":"INCIDENTE"},
-            {"codigo":"TP-09","tipificacion":"Cierre de Vía","categoria":"INCIDENTE"},
-            {"codigo":"TP-10","tipificacion":"Apertura de Vía","categoria":"INCIDENTE"},
-            {"codigo":"TP-11","tipificacion":"Traslado de equipos / Personal","categoria":"TAREA PROGRAMADA"},
-            {"codigo":"TP-12","tipificacion":"Abastecimiento de combustible","categoria":"TAREA PROGRAMADA"},
-            {"codigo":"TP-13","tipificacion":"Entrega de Materiales","categoria":"TAREA PROGRAMADA"},
-            {"codigo":"TP-14","tipificacion":"Entrega de Uniformes","categoria":"TAREA PROGRAMADA"},
-            {"codigo":"TP-15","tipificacion":"Retorno de materiales / Equipos","categoria":"TAREA PROGRAMADA"},
-            {"codigo":"TP-16","tipificacion":"Activación de Generadores (pruebas)","categoria":"TAREA PROGRAMADA"},
-            {"codigo":"TP-17","tipificacion":"Instalación de dispositivos GPS","categoria":"TAREA PROGRAMADA"},
-            {"codigo":"TP-18","tipificacion":"Instalación de Equipos de comunicación (Radios, etc)","categoria":"TAREA PROGRAMADA"},
-            {"codigo":"TP-19","tipificacion":"Traslado de unidades (mantenimiento, reparación, base/sede)","categoria":"TAREA PROGRAMADA"},
-            {"codigo":"TP-20","tipificacion":"Lavado de unidades","categoria":"TAREA PROGRAMADA"},
-            {"codigo":"TP-21","tipificacion":"Inspección / Mantenimiento preventivo de unidades","categoria":"TAREA PROGRAMADA"},
-            {"codigo":"TP-22","tipificacion":"Reuniones / Cursos / Capacitaciones","categoria":"TAREA PROGRAMADA"},
-            {"codigo":"TP-23","tipificacion":"Entrega de documentos / Especies valoradas","categoria":"TAREA PROGRAMADA"},
-            {"codigo":"TP-24","tipificacion":"Recojo de documentos / Especies valoradas","categoria":"TAREA PROGRAMADA"},
-            {"codigo":"TP-25","tipificacion":"Limpieza de garita / Base / Sede","categoria":"TAREA PROGRAMADA"},
-            {"codigo":"TP-26","tipificacion":"Pruebas de luces / sirenas / altavoz","categoria":"TAREA PROGRAMADA"},
-            {"codigo":"TP-27","tipificacion":"Activación de luces de emergencia","categoria":"TAREA NO PROGRAMADA"},
-            {"codigo":"TP-28","tipificacion":"Ingreso de Personal","categoria":"TAREA NO PROGRAMADA"},
-            {"codigo":"TP-29","tipificacion":"Salida de Personal","categoria":"TAREA NO PROGRAMADA"},
-            {"codigo":"TP-30","tipificacion":"Revisión de Personal","categoria":"TAREA NO PROGRAMADA"},
-            {"codigo":"TP-31","tipificacion":"Personal Ausente (Falta de marcación)","categoria":"TAREA NO PROGRAMADA"},
-            {"codigo":"TP-32","tipificacion":"Entrega de llaves","categoria":"TAREA NO PROGRAMADA"},
-            {"codigo":"TP-33","tipificacion":"Recojo de llaves","categoria":"TAREA NO PROGRAMADA"},
-            {"codigo":"TP-34","tipificacion":"Activación de Generador (Fallo de energía)","categoria":"TAREA NO PROGRAMADA"},
-            {"codigo":"TP-35","tipificacion":"Activación de Generador (Mantenimiento)","categoria":"TAREA NO PROGRAMADA"},
-            {"codigo":"TP-36","tipificacion":"Entrega de Repuestos","categoria":"OPERACIONAL"},
-            {"codigo":"TP-37","tipificacion":"Entrega de Materiales","categoria":"OPERACIONAL"},
-            {"codigo":"TP-38","tipificacion":"Traslado de Repuestos","categoria":"OPERACIONAL"},
-            {"codigo":"TP-39","tipificacion":"Traslado de Materiales","categoria":"OPERACIONAL"},
-            {"codigo":"TP-40","tipificacion":"Entrega de unidades","categoria":"OPERACIONAL"},
-            {"codigo":"TP-41","tipificacion":"Revisión de unidades","categoria":"OPERACIONAL"},
-            {"codigo":"TP-42","tipificacion":"Cruce de Vías","categoria":"OPERACIONAL"},
-            {"codigo":"TP-43","tipificacion":"Control de Unidades","categoria":"OPERACIONAL"},
-            {"codigo":"TP-44","tipificacion":"Despacho / Asignación de servicios","categoria":"COMERCIAL"},
-            {"codigo":"TP-45","tipificacion":"Cambio de servicios","categoria":"COMERCIAL"},
-            {"codigo":"TP-46","tipificacion":"Anulación de servicios","categoria":"COMERCIAL"},
-            {"codigo":"TP-47","tipificacion":"Cambio de personal","categoria":"ADMINISTRATIVA"},
-            {"codigo":"TP-48","tipificacion":"Solicitud de información","categoria":"ADMINISTRATIVA"},
-            {"codigo":"TP-49","tipificacion":"Información de eventos / Averías","categoria":"ADMINISTRATIVA"},
-            {"codigo":"TP-50","tipificacion":"Solicitud de reportes","categoria":"ADMINISTRATIVA"},
-            {"codigo":"TP-51","tipificacion":"Entrega de equipos (PC, Radio, etc)","categoria":"INFRAESTRUCTURA"},
-            {"codigo":"TP-52","tipificacion":"Instalación de equipos (PC, Radio, etc)","categoria":"INFRAESTRUCTURA"},
-            {"codigo":"TP-53","tipificacion":"Soporte / Mantenimiento de equipos","categoria":"INFRAESTRUCTURA"},
-            {"codigo":"TP-54","tipificacion":"Falla de comunicación / sistema","categoria":"INFRAESTRUCTURA"},
-            {"codigo":"TP-55","tipificacion":"Entrega / Recepción de unidades","categoria":"CALIDAD"},
-            {"codigo":"TP-56","tipificacion":"Inspección de calidad","categoria":"CALIDAD"},
-            {"codigo":"TP-57","tipificacion":"Revisión de unidades (Check list, etc)","categoria":"CALIDAD"}
+        // 1. DATASET COMPLETO (La lista de trámites y respuestas)
+        const tramites = [
+            { 
+                "codigo": "EMISIÓN DE DOC. EN FÍSICO", 
+                "tipificacion": "Consulta si se podría brindar constancias o certificados en físico", 
+                "respuesta": "Se indica que por el momento no se brindan documentos en físico.", 
+                "categoria": "GENERAL"
+            },
+            { 
+                "codigo": "DEVOLUCIÓN DE PAGOS", 
+                "tipificacion": "Solicita los pasos a seguir para poder generar solicitud de Devolución de Pagos", 
+                "respuesta": "Se brindan los pasos a seguir, plazo de atención y cómo poder obtener mayores detalles a través de Explora UPC.", 
+                "categoria": "FINANCIERO"
+            },
+            { 
+                "codigo": "SUBSANACIÓN DE EVALUACIÓN", 
+                "tipificacion": "Solicita los pasos a seguir para poder generar solicitud de Subsanación de Evaluaciones", 
+                "respuesta": "Se brindan los puntos de consideración, fechas disponibles, plazo de atención, costo y se comparte link de Explora UPC para que pueda obtener mayor información al respecto.", 
+                "categoria": "EVALUACIONES"
+            },
+            { 
+                "codigo": "COPIA CERTIFICADA VIRTUAL DE DIPLOMA DE BACHILLER O TÍTULO PROFESIONAL", 
+                "tipificacion": "Solicita información sobre trámite de Copia Certificada Virtual", 
+                "respuesta": "Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC.", 
+                "categoria": "CERTIFICADOS"
+            },
+            { 
+                "codigo": "RECUPERACIÓN DE EVALUACIÓN", 
+                "tipificacion": "Solicita los pasos a seguir para poder generar solicitud de Recuperación de Evaluación", 
+                "respuesta": "Se brindan los puntos de consideración, fechas disponibles, plazo de atención, costo y se comparte link de Explora UPC para que pueda obtener mayor información al respecto.", 
+                "categoria": "EVALUACIONES"
+            },
+            { 
+                "codigo": "CERTIFICADO DE ESTUDIOS - FIRMA DIGITAL", 
+                "tipificacion": "Solicita información sobre trámite de Certificado de Estudios - Firma Digital", 
+                "respuesta": "Se brinda información sobre el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC.", 
+                "categoria": "CERTIFICADOS"
+            },
+            { 
+                "codigo": "CERTIFICADO DE ESTUDIOS - FIRMA ELECTRÓNICA", 
+                "tipificacion": "Solicita información sobre trámite de Certificado de Estudios - Firma Electrónica", 
+                "respuesta": "Se brinda información sobre el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC.", 
+                "categoria": "CERTIFICADOS"
+            },
+            { 
+                "codigo": "EMISIÓN DE SÍLABO", 
+                "tipificacion": "Solicita información sobre trámite de Emisión de Sílabo", 
+                "respuesta": "Se brinda información sobre el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC.", 
+                "categoria": "CERTIFICADOS" // Aunque es un documento, lo agrupamos con Certificados por ser trámites documentarios
+            }
         ];
 
         // 2. OBTENER ELEMENTOS DEL DOM
@@ -187,19 +182,24 @@
         let categoriaActiva = "Todos"; // Controla qué segmento está seleccionado
 
         // 3. FUNCIÓN PARA DIBUJAR LA LISTA
-        function mostrarTipificaciones(filtradas) {
+        function mostrarTramites(filtradas) {
             lista.innerHTML = ""; // Limpiar la lista actual
+            if (filtradas.length === 0) {
+                 lista.innerHTML = '<p style="text-align:center; color:#999; margin-top:30px;">No se encontraron resultados para la búsqueda o filtro.</p>';
+                 return;
+            }
             filtradas.forEach(c => {
                 const div = document.createElement("div");
                 div.classList.add("item");
                 
-                // Crea la estructura usando CÓDIGO, TIPIFICACIÓN y CATEGORIA
+                // Crea la estructura usando las nuevas propiedades
                 div.innerHTML = `
                     <div class="item-header">
                         <span class="codigo">${c.codigo}</span>
                         <span class="categoria-tag">${c.categoria}</span>
                     </div>
-                    <span class="descripcion">${c.tipificacion}</span>
+                    <span class="tipificacion">**Consulta:** ${c.tipificacion}</span>
+                    <span class="respuesta">**Respuesta/Pasos:** ${c.respuesta}</span>
                 `;
                 lista.appendChild(div);
             });
@@ -207,15 +207,15 @@
 
         // 4. FUNCIÓN MAESTRA DE SEGMENTACIÓN (FILTRADO POR CATEGORÍA)
         function filtrarPorCategoria(categoria) {
-            let listaResultado = tipificaciones; 
+            let listaResultado = tramites; 
 
-            // Si la categoría NO es "Todos", usamos .filter() para segmentar el conjunto
+            // Segmentamos el conjunto
             if (categoria !== "Todos") {
-                listaResultado = tipificaciones.filter(tipi => tipi.categoria === categoria);
+                listaResultado = tramites.filter(tramite => tramite.categoria === categoria);
             }
 
             // Muestra los resultados segmentados
-            mostrarTipificaciones(listaResultado);
+            mostrarTramites(listaResultado);
             
             // Actualiza el estilo del botón activo
             document.querySelectorAll('#filtros button').forEach(btn => {
@@ -236,27 +236,4 @@
             }
         });
 
-        // 6. EVENTO PARA LA BÚSQUEDA POR TEXTO (INPUT)
-        input.addEventListener("input", () => {
-            const texto = input.value.toLowerCase();
-            
-            // 6.1. Define el subconjunto base (la lista completa o la lista ya segmentada)
-            let listaBase = tipificaciones;
-            if (categoriaActiva !== "Todos") {
-                listaBase = tipificaciones.filter(tipi => tipi.categoria === categoriaActiva);
-            }
-
-            // 6.2. Aplica el filtro de texto sobre el subconjunto (busca en CÓDIGO y TIPIFICACIÓN)
-            const filtradasPorTexto = listaBase.filter(c =>
-                c.tipificacion.toLowerCase().includes(texto) ||
-                c.codigo.toLowerCase().includes(texto)
-            );
-            
-            mostrarTipificaciones(filtradasPorTexto);
-        });
-
-        // INICIALIZACIÓN: Muestra la lista completa al cargar la página
-        filtrarPorCategoria("Todos"); 
-    </script>
-    </body>
-</html>
+        // 6.
