@@ -1,309 +1,99 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>💡 TIPIFICACIONES CT - UPC</title>
-    
-            <link rel="icon" type="image/jpeg" href="UPC-LOGO.jpeg" />
-    
-    <style>
-        /* Estilos Generales */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f4f4f9; 
-            text-align: center;
-            margin: 0;
-            padding: 20px;
-        }
-        h1 {
-            color: #7900b9; 
-        }
-        /* Estilo de la caja de búsqueda */
-        input {
-            width: 80%;
-            padding: 10px;
-            border: 2px solid #7900b9; 
-            border-radius: 10px;
-            margin-bottom: 15px;
-            box-sizing: border-box; 
-            max-width: 700px;
-            font-size: 1em;
-        }
-        /* Estilos para la barra de filtros */
-        #filtros {
-            margin-bottom: 20px;
-            display: flex; 
-            flex-wrap: wrap; 
-            justify-content: center;
-            max-width: 90%;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        #filtros button {
-            background-color: #e5e0f5;
-            color: #38005b;
-            border: 1px solid #c0b5e8;
-            padding: 8px 12px;
-            margin: 4px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-            font-size: 0.85em;
-            white-space: nowrap; 
-        }
-        /* Estilo para resaltar el botón activo */
-        #filtros button.active,
-        #filtros button:hover {
-            background-color: #7900b9;
-            color: white;
-            border-color: #5d008f;
-        }
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Search, ArrowRight } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
-        /* Estilos de cada item de la lista */
-        .item {
-            background: white;
-            border-left: 8px solid #7900b9; 
-            margin: 10px auto;
-            padding: 15px;
-            width: 80%;
-            max-width: 700px;
-            border-radius: 8px;
-            text-align: left;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-        .item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .codigo {
-            font-weight: bold;
-            color: #7900b9;
-            margin-right: 10px;
-            font-size: 1.2em;
-        }
-        .categoria-tag {
-            font-size: 0.7em;
-            color: white;
-            background: #3498db; 
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-        .tipificacion {
-            font-size: 0.9em;
-            color: #555;
-            margin-bottom: 8px;
-            font-style: italic;
-        }
-        .respuesta {
-            font-size: 1em;
-            color: #333;
-            padding-top: 5px;
-            border-top: 1px dashed #eee; /* Separador entre la consulta y la respuesta */
-        }
-    </style>
-    </head>
-<body>
-    <h1>💡 TIPIFICACIONES CT - UPC</h1>
-    
-    <input type="text" id="busqueda" placeholder="Buscar por trámite o pasos..." />
+export default function PortalVirtualUPC() {
+  const [search, setSearch] = useState("");
+  const [resultados, setResultados] = useState([]);
 
-    <div id="filtros">
-        <button data-filtro="Todos" class="active">Todos</button>
-        <button data-filtro="TRÁMITES - PASOS">TRÁMITES - PASOS</button>
-    </div>
-    
-    <div id="lista"></div>
+  const recursos = [
+    { id: 1, titulo: "Matrícula en Línea", descripcion: "Accede a tu matrícula fácilmente desde cualquier lugar.", categoria: "Académico" },
+    { id: 2, titulo: "Pagos y Boletas", descripcion: "Consulta tus pagos, boletas y estados financieros.", categoria: "Finanzas" },
+    { id: 3, titulo: "Trámites y Solicitudes", descripcion: "Realiza solicitudes académicas y administrativas en línea.", categoria: "Servicios" },
+    { id: 4, titulo: "Biblioteca Virtual", descripcion: "Explora libros, revistas y recursos digitales disponibles para ti.", categoria: "Recursos" },
+    { id: 5, titulo: "Atención al Alumno", descripcion: "Contáctanos para resolver tus dudas o incidencias de manera rápida.", categoria: "Soporte" },
+  ];
 
-    <script>
-        // 1. DATASET COMPLETO (La lista de trámites y respuestas)
-        const tramites = [
-            { 
-                "codigo": "RETIRO DE CICLO - PASOS", 
-                "tipificacion": "Solicita información sobre trámite de Retiro de Ciclo / Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC. ", 
-                "respuesta": "Trámites > Retiro de ciclo > Fechas e información clave del proceso", 
-                "categoria": "TRÁMITES - PASOS"
-            },
-            {
-                "codigo": "RETIRO DE CICLO - TIENE CURSOS EN EL MOD A Y DESEA TRAMITAR EL RETIRO EN EL MOD. B", 
-                "tipificacion": "Consulta por el trámite de Retiro de Ciclo / Se verifica que el alumno cuenta con matrícula en el Módulo A y se le indica que no es posible generar la solicitud de Retiro de Ciclo, ya que este trámite debió realizarse en las fechas correspondientes al Módulo A y no durante el Módulo B.", 
-                "respuesta": "Trámites > Retiro de ciclo > Fechas e información clave del proceso", 
-                "categoria": "TRÁMITES - PASOS" 
-            },
-            { 
-                "codigo": "RETIRO DE ASIGNATURA - PASOS", 
-                "tipificacion": "Solicita información sobre trámite de Retiro de Asignatura / Se brindan información sobre fechas disponibles, plazo de atención, costo y cómo poder obtener mayores detalles a través de Explora UPC. ", 
-                "respuesta": "Trámites > Retiro de asignatura > Información del proceso", 
-                "categoria": "TRÁMITES - PASOS"
-            },
-            { 
-                "codigo": "CAMBIO DE MODALIDAD - PASOS", 
-                "tipificacion": "Solicita información sobre trámite de Cambio de Modalidad / Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC. ", 
-                "respuesta": "Trámites > Cambio de modalidad > Traslado de Pregrado a EPE - WS o viceversa", 
-                "categoria": "TRÁMITES - PASOS"
-            },
-            { 
-                "codigo": "TRASLADO DE CARRERA - PASOS", 
-                "tipificacion": "Solicita información sobre trámite de Traslado de Carrera / Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC. ", 
-                "respuesta": "Trámites > Traslado de carrera > Fechas e información clave del proceso", 
-                "categoria": "TRÁMITES - PASOS"
-            },
-            { 
-                "codigo": "TRASLADO DE CAMPUS - PASOS", 
-                "tipificacion": "Solicita información sobre trámite de Traslado de Campus / Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC. ", 
-                "respuesta": "Trámites > Traslado de campus > Fechas e información clave del proceso", 
-                "categoria": "TRÁMITES - PASOS"
-            },
-             { 
-                "codigo": "CONVALIDACIÓN DE ASIGNATURAS - PASOS", 
-                "tipificacion": "Solicita información sobre trámite de Convalidación de Asignaturas / Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC. ", 
-                "respuesta": "Trámites > Convalidación de asignatura > Fechas e información clave del proceso", 
-                "categoria": "TRÁMITES - PASOS"
-            },
-             {
-                "codigo": "DEVOLUCIÓN DE PAGOS - PASOS", 
-                "tipificacion": "Solicita los pasos a seguir para poder generar solicitud de Devolución de Pagos / Se brindan los pasos a seguir, plazo de atención y cómo poder obtener mayores detalles a través de Explora UPC. ", 
-                "respuesta": "Trámites > Devolución de pagos > Fechas e información clave del proceso", 
-                "categoria": "TRÁMITES - PASOS" 
-            },
-            {
-                "codigo": "SUBSANACIÓN DE EVALUACIÓN - PASOS", 
-                "tipificacion": "Solicita los pasos a seguir para poder generar solicitud de Subsanación de Evaluaciones / Se brindan los puntos de consideración, fechas disponibles, plazo de atención, costo y se comparte link de Explora UPC para que pueda obtener mayor información al respecto. ", 
-                "respuesta": "Asistencia y Notas > Recuperación y subsanación > Fechas e información clave del proceso", 
-                "categoria": "TRÁMITES - PASOS"
-            },
-             {
-                "codigo": "RECUPERACIÓN DE EVALUACIÓN - PASOS", 
-                "tipificacion": "Solicita los pasos a seguir para poder generar solicitud de Recuperación de Evaluación / Se brindan los puntos de consideración, fechas disponibles, plazo de atención, costo y se comparte link de Explora UPC para que pueda obtener mayor información al respecto. ", 
-                "respuesta": "Asistencia y Notas > Recuperación y subsanación > Fechas e información clave del proceso", 
-                "categoria": "TRÁMITES - PASOS"
-            },
-             {
-                "codigo": "COPIA CERTIFICADA VIRTUAL DE DIPLOMA DE BACHILLER O TÍTULO PROFESIONAL - PASOS", 
-                "tipificacion": "Solicita información sobre trámite de Copia Certificada Virtual / Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC. ", 
-                "respuesta": "Asistencia y Notas > Recuperación y subsanación > Fechas e información clave del proceso", 
-                "categoria": "TRÁMITES - PASOS"
-            },
-             { 
-                "codigo": "CERTIFICADO DE ESTUDIOS - FIRMA DIGITAL - PASOS", 
-                "tipificacion": "Solicita información sobre trámite de Certificado de Estudios - Firma Digital / Se brinda información sobre el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC. ", 
-                "respuesta": "Trámites > Constancias y certificados > Información clave del proceso", 
-                "categoria": "TRÁMITES - PASOS"
-            },
-             { 
-                "codigo": "CERTIFICADO DE ESTUDIOS - FIRMA ELECTRÓNICA - PASOS", 
-                "tipificacion": "Solicita información sobre trámite de Certificado de Estudios - Firma Electrónica / Se brinda información sobre el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC. ", 
-                "respuesta": "Trámites > Constancias y certificados > Información clave del proceso", 
-                "categoria": "TRÁMITES - PASOS" 
-            }
-        ];
+  useEffect(() => {
+    if (search.trim() === "") {
+      setResultados(recursos);
+    } else {
+      setResultados(
+        recursos.filter((r) =>
+          r.titulo.toLowerCase().includes(search.toLowerCase())
+        )
+      );
+    }
+  }, [search]);
 
-        // 2. OBTENER ELEMENTOS DEL DOM
-        const input = document.getElementById("busqueda");
-        const lista = document.getElementById("lista");
-        const contenedorFiltros = document.getElementById("filtros");
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-red-700 via-red-600 to-red-500 text-white flex flex-col items-center p-6">
+      <motion.h1
+        className="text-4xl md:text-5xl font-bold mb-6 text-center"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        Portal Virtual UPC
+      </motion.h1>
 
-        let categoriaActiva = "Todos"; 
+      <motion.div
+        className="w-full max-w-lg flex items-center bg-white rounded-2xl p-2 shadow-lg mb-8"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+      >
+        <Search className="text-gray-500 ml-2" />
+        <input
+          type="text"
+          placeholder="Buscar recursos o trámites..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full p-2 rounded-xl outline-none text-gray-800 bg-transparent"
+        />
+      </motion.div>
 
-        // Función auxiliar para eliminar acentos de una cadena (mantiene la búsqueda flexible)
-        const quitarAcentos = (str) => {
-            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        };
+      <motion.div
+        className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+      >
+        {resultados.length > 0 ? (
+          resultados.map((r, index) => (
+            <motion.div
+              key={r.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <Card className="bg-white/90 text-gray-800 rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+                <CardContent className="p-6 flex flex-col gap-3">
+                  <h2 className="text-xl font-semibold text-red-700">{r.titulo}</h2>
+                  <p className="text-sm text-gray-600">{r.descripcion}</p>
+                  <div className="mt-2 flex justify-between items-center">
+                    <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">{r.categoria}</span>
+                    <Button variant="outline" size="sm" className="border-red-500 text-red-600 hover:bg-red-50">
+                      Ir <ArrowRight className="ml-1 w-4 h-4" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))
+        ) : (
+          <p className="col-span-full text-center text-white/80 text-lg">No se encontraron resultados.</p>
+        )}
+      </motion.div>
 
-        // 3. FUNCIÓN PARA DIBUJAR LA LISTA
-        function mostrarTramites(filtradas) {
-            lista.innerHTML = ""; 
-            if (filtradas.length === 0) {
-                 lista.innerHTML = '<p style="text-align:center; color:#999; margin-top:30px;">No se encontraron resultados para la búsqueda o filtro.</p>';
-                 return;
-            }
-            filtradas.forEach(c => {
-                const div = document.createElement("div");
-                div.classList.add("item");
-                
-                div.innerHTML = `
-                    <div class="item-header">
-                        <span class="codigo">${c.codigo}</span>
-                        <span class="categoria-tag">${c.categoria}</span>
-                    </div>
-                    <span class="tipificacion">${c.tipificacion}</span>
-                    <span class="respuesta">${c.respuesta}</span>
-                `;
-                
-                lista.appendChild(div);
-            });
-        }
-
-        // 4. FUNCIÓN MAESTRA DE SEGMENTACIÓN (FILTRADO POR CATEGORÍA)
-        function filtrarPorCategoria(categoria) {
-            let listaResultado = tramites; 
-
-            if (categoria !== "Todos") {
-                listaResultado = tramites.filter(tramite => tramite.categoria === categoria);
-            }
-
-            mostrarTramites(listaResultado);
-            
-            document.querySelectorAll('#filtros button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector(`[data-filtro="${categoria}"]`).classList.add('active');
-            
-            categoriaActiva = categoria; 
-        }
-
-        // 5. EVENTO PARA EL FILTRO POR BOTÓN (CLICK)
-        contenedorFiltros.addEventListener("click", (evento) => {
-            if (evento.target.tagName === 'BUTTON' && evento.target.dataset.filtro) {
-                const categoriaSeleccionada = evento.target.dataset.filtro;
-                input.value = ""; 
-                filtrarPorCategoria(categoriaSeleccionada);
-            }
-        });
-
-        // 6. EVENTO PARA LA BÚSQUEDA POR TEXTO (INPUT)
-        input.addEventListener("input", () => {
-            const texto = input.value.toLowerCase();
-            
-            let listaBase = tramites;
-            if (categoriaActiva !== "Todos") {
-                listaBase = tramites.filter(tramite => tramite.categoria === categoriaActiva);
-            }
-
-            // Normaliza la entrada de texto
-            const textoSinAcentos = quitarAcentos(texto);
-
-            // 6.2. Aplica el filtro de texto sobre el subconjunto (buscando en las versiones sin acentos)
-            const filtradasPorTexto = listaBase.filter(c => {
-                // Normaliza y convierte a minúsculas los campos de los datos para la comparación
-                const codigoSinAcentos = quitarAcentos(c.codigo.toLowerCase());
-                const tipificacionSinAcentos = quitarAcentos(c.tipificacion.toLowerCase());
-                const respuestaSinAcentos = quitarAcentos(c.respuesta.toLowerCase());
-
-                return codigoSinAcentos.includes(textoSinAcentos) ||
-                       tipificacionSinAcentos.includes(textoSinAcentos) ||
-                       respuestaSinAcentos.includes(textoSinAcentos);
-            });
-            
-            mostrarTramites(filtradasPorTexto);
-        });
-        
-        // 7. EVENTO DE TECLADO PARA FOCALIZAR EL BUSCADOR (CTRL + F)
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'f' && (e.ctrlKey || e.metaKey)) {
-                e.preventDefault(); 
-                input.focus();      
-            }
-        });
-
-
-        // INICIALIZACIÓN: Muestra la lista completa al cargar la página
-        filtrarPorCategoria("Todos"); 
-    </script>
-    </body>
-</html>
+      <motion.footer
+        className="mt-16 text-center text-sm text-white/80"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5 }}
+      >
+        © {new Date().getFullYear()} Universidad Peruana de Ciencias Aplicadas (UPC). Todos los derechos reservados.
+      </motion.footer>
+    </div>
+  );
+}
