@@ -254,13 +254,13 @@
       });
     });
 
-    /* --- ATAJO CTRL + F PERSONALIZADO --- */
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "f" && (e.ctrlKey || e.metaKey)) {
-        e.preventDefault();
-        inputBusqueda.focus();
-      }
-    });
+/* --- ATAJO CTRL + F PERSONALIZADO --- */
+document.addEventListener("keydown", (e) => {
+  if (e.key === "f" && (e.ctrlKey || e.metaKey)) {
+    e.preventDefault();
+    document.getElementById("busqueda").focus();
+  }
+});
   </script>
 </body>
 </html>
