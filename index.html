@@ -253,6 +253,13 @@
           selected === "todas" || card.dataset.category === selected ? "" : "none";
       });
     });
+        /* --- ATALHO CTRL + F PERSONALIZADO --- */
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "f" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        inputBusqueda.focus();
+      }
+    });
   </script>
 </body>
 </html>
