@@ -1,282 +1,235 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>💡 Trámites y Consultas UPC</title>
-<style>
-    /* ====== ESTILOS GENERALES ====== */
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal de Tipificaciones y Trámites</title>
+  <style>
+    /* ===== Estilos base ===== */
     :root {
-        --color-fondo: #f4f4f9;
-        --color-texto: #333;
-        --color-secundario: #555;
-        --color-principal: #7900b9;
-        --color-boton: #e5e0f5;
-        --color-boton-texto: #38005b;
-        --color-borde: #c0b5e8;
-        --color-item: #fff;
-        --color-sombra: rgba(0,0,0,0.1);
+      --color-bg: #f8f9fb;
+      --color-text: #2c2c2c;
+      --color-accent: #7b5dfb;
+      --color-card: #ffffff;
+      --color-border: #ddd;
     }
 
-    body.dark-mode {
-        --color-fondo: #1e1e1e;
-        --color-texto: #f4f4f9;
-        --color-secundario: #bbb;
-        --color-principal: #b37aff;
-        --color-boton: #2e2e2e;
-        --color-boton-texto: #f4f4f9;
-        --color-borde: #555;
-        --color-item: #2a2a2a;
-        --color-sombra: rgba(255,255,255,0.05);
+    [data-theme="dark"] {
+      --color-bg: #1e1f25;
+      --color-text: #f5f5f5;
+      --color-accent: #a58bff;
+      --color-card: #2a2b32;
+      --color-border: #444;
     }
 
     body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: var(--color-fondo);
-        color: var(--color-texto);
-        text-align: center;
-        margin: 0;
-        padding: 20px;
-        transition: background 0.3s, color 0.3s;
+      font-family: "Inter", system-ui, sans-serif;
+      background-color: var(--color-bg);
+      color: var(--color-text);
+      margin: 0;
+      padding: 0;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2rem;
+      background: var(--color-card);
+      border-bottom: 1px solid var(--color-border);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
     h1 {
-        color: var(--color-principal);
+      margin: 0;
+      font-size: 1.4rem;
+      color: var(--color-accent);
     }
 
-    /* ====== BOTÓN DE MODO ====== */
-    #toggle-mode {
-        position: fixed;
-        top: 15px;
-        right: 15px;
-        background-color: var(--color-principal);
-        color: white;
-        border: none;
-        border-radius: 20px;
-        padding: 8px 14px;
-        cursor: pointer;
-        font-size: 0.9em;
-        box-shadow: 0 2px 6px var(--color-sombra);
-        transition: background-color 0.3s, transform 0.2s;
+    main {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
     }
 
-    #toggle-mode:hover {
-        transform: scale(1.05);
+    .search-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
     }
 
-    /* ====== BÚSQUEDA ====== */
-    input {
-        width: 80%;
-        padding: 10px;
-        border: 2px solid var(--color-principal);
-        border-radius: 10px;
-        margin-bottom: 15px;
-        box-sizing: border-box;
-        max-width: 700px;
-        font-size: 1em;
-        background: var(--color-item);
-        color: var(--color-texto);
+    .search-bar input {
+      flex: 1;
+      padding: 0.6rem 1rem;
+      border-radius: 999px;
+      border: 1px solid var(--color-border);
+      font-size: 1rem;
+      background: var(--color-card);
+      color: var(--color-text);
     }
 
-    /* ====== FILTROS ====== */
-    #filtros {
-        margin-bottom: 20px;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        max-width: 90%;
-        margin-left: auto;
-        margin-right: auto;
+    .filter {
+      margin-bottom: 1.5rem;
     }
 
-    #filtros button {
-        background-color: var(--color-boton);
-        color: var(--color-boton-texto);
-        border: 1px solid var(--color-borde);
-        padding: 8px 12px;
-        margin: 4px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-        font-size: 0.85em;
-        white-space: nowrap;
+    select {
+      padding: 0.5rem;
+      border-radius: 999px;
+      border: 1px solid var(--color-border);
+      background: var(--color-card);
+      color: var(--color-text);
     }
 
-    #filtros button.active,
-    #filtros button:hover {
-        background-color: var(--color-principal);
-        color: white;
-        border-color: #5d008f;
+    .card {
+      background: var(--color-card);
+      border-radius: 1rem;
+      padding: 1.2rem 1.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid var(--color-border);
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
+      transition: transform 0.2s ease, background 0.3s ease;
     }
 
-    /* ====== TARJETAS ====== */
-    .item {
-        background: var(--color-item);
-        border-left: 8px solid var(--color-principal);
-        margin: 10px auto;
-        padding: 15px;
-        width: 80%;
-        max-width: 700px;
-        border-radius: 8px;
-        text-align: left;
-        display: flex;
+    .card:hover {
+      transform: translateY(-3px);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: var(--color-accent);
+    }
+
+    /* ===== Switch tipo iPhone ===== */
+    .theme-switch {
+      position: relative;
+      width: 50px;
+      height: 28px;
+      background-color: var(--color-border);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .theme-switch::before {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 22px;
+      height: 22px;
+      background-color: white;
+      border-radius: 50%;
+      transition: transform 0.3s;
+    }
+
+    [data-theme="dark"] .theme-switch {
+      background-color: var(--color-accent);
+    }
+
+    [data-theme="dark"] .theme-switch::before {
+      transform: translateX(22px);
+      background-color: #fff;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 0;
+      font-size: 0.9rem;
+      color: var(--color-text);
+      opacity: 0.8;
+    }
+
+    @media (max-width: 600px) {
+      header {
         flex-direction: column;
-        box-shadow: 0 2px 8px var(--color-sombra);
-        transition: background 0.3s, border-color 0.3s, box-shadow 0.3s;
+        gap: 0.5rem;
+      }
     }
-
-    .item-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 8px;
-    }
-
-    .codigo {
-        font-weight: bold;
-        color: var(--color-principal);
-        margin-right: 10px;
-        font-size: 1.2em;
-    }
-
-    .categoria-tag {
-        font-size: 0.7em;
-        color: white;
-        background: #3498db;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-weight: 600;
-    }
-
-    .tipificacion {
-        font-size: 0.9em;
-        color: var(--color-secundario);
-        margin-bottom: 8px;
-        font-style: italic;
-    }
-
-    .respuesta {
-        font-size: 1em;
-        color: var(--color-texto);
-        padding-top: 5px;
-        border-top: 1px dashed var(--color-borde);
-    }
-</style>
+  </style>
 </head>
 <body>
-    <button id="toggle-mode">🌙 Modo oscuro</button>
-    <h1>💡 TIPIFICACIONES CT - UPC</h1>
-    
-    <input type="text" id="busqueda" placeholder="Buscar por trámite o pasos..." />
+  <header>
+    <h1>Portal de Tipificaciones y Trámites</h1>
+    <div class="theme-switch" id="themeToggle"></div>
+  </header>
 
-    <div id="filtros">
-        <button data-filtro="Todos" class="active">Todos</button>
-        <button data-filtro="EVALUACIONES">Evaluaciones</button>
-        <button data-filtro="TRÁMITES - PASOS">TRÁMITES - PASOS</button>
-        <button data-filtro="GENERAL">Consultas Generales</button>
+  <main>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Buscar tipificación o trámite..." />
     </div>
-    
-    <div id="lista"></div>
 
-    <script>
-        // ====== DATASET ======
-        const tramites = [ /* ... tu mismo array sin cambios ... */ ];
+    <div class="filter">
+      <select id="categoryFilter">
+        <option value="todas">Todas las categorías</option>
+        <option value="pagos">Pagos</option>
+        <option value="documentos">Documentos</option>
+        <option value="asesoramiento">Asesoramiento</option>
+      </select>
+    </div>
 
-        // ====== VARIABLES ======
-        const input = document.getElementById("busqueda");
-        const lista = document.getElementById("lista");
-        const contenedorFiltros = document.getElementById("filtros");
-        const toggleMode = document.getElementById("toggle-mode");
+    <div id="cardsContainer">
+      <!-- Ejemplo de tarjetas -->
+      <div class="card" data-category="pagos">
+        <h3>Pago no registrado</h3>
+        <p>Alumno reporta que realizó el pago pero no figura en el sistema. Se deriva a cobranzas para verificación.</p>
+      </div>
 
-        let categoriaActiva = "Todos";
+      <div class="card" data-category="documentos">
+        <h3>Solicitud de constancia</h3>
+        <p>El alumno solicita una constancia de estudios. Se le indica el procedimiento a seguir en el portal.</p>
+      </div>
 
-        // ====== FUNCIÓN PARA DIBUJAR LA LISTA ======
-        const quitarAcentos = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      <div class="card" data-category="asesoramiento">
+        <h3>Asesoramiento en matrícula</h3>
+        <p>Alumno requiere orientación para realizar matrícula en línea. Se le brinda paso a paso.</p>
+      </div>
+    </div>
+  </main>
 
-        function mostrarTramites(filtradas) {
-            lista.innerHTML = "";
-            if (filtradas.length === 0) {
-                lista.innerHTML = '<p style="text-align:center; color:#999; margin-top:30px;">No se encontraron resultados.</p>';
-                return;
-            }
-            filtradas.forEach(c => {
-                const div = document.createElement("div");
-                div.classList.add("item");
-                div.innerHTML = `
-                    <div class="item-header">
-                        <span class="codigo">${c.codigo}</span>
-                        <span class="categoria-tag">${c.categoria}</span>
-                    </div>
-                    <span class="tipificacion">${c.tipificacion}</span>
-                    <span class="respuesta">${c.respuesta}</span>
-                `;
-                lista.appendChild(div);
-            });
-        }
+  <footer>
+    © 2025 Portal de Tipificaciones - Desarrollado con 💜 por José
+  </footer>
 
-        function filtrarPorCategoria(categoria) {
-            let listaResultado = tramites;
-            if (categoria !== "Todos") {
-                listaResultado = tramites.filter(t => t.categoria === categoria);
-            }
-            mostrarTramites(listaResultado);
-            document.querySelectorAll('#filtros button').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`[data-filtro="${categoria}"]`).classList.add('active');
-            categoriaActiva = categoria;
-        }
+  <script>
+    // ===== Modo oscuro / claro automático =====
+    const body = document.body;
+    const toggle = document.getElementById("themeToggle");
 
-        contenedorFiltros.addEventListener("click", e => {
-            if (e.target.tagName === 'BUTTON' && e.target.dataset.filtro) {
-                input.value = "";
-                filtrarPorCategoria(e.target.dataset.filtro);
-            }
-        });
+    // Detecta preferencia del sistema
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if (prefersDark) {
+      body.setAttribute("data-theme", "dark");
+    }
 
-        input.addEventListener("input", () => {
-            const texto = quitarAcentos(input.value.toLowerCase());
-            let listaBase = categoriaActiva !== "Todos"
-                ? tramites.filter(t => t.categoria === categoriaActiva)
-                : tramites;
-            const filtradas = listaBase.filter(c =>
-                quitarAcentos(c.codigo.toLowerCase()).includes(texto) ||
-                quitarAcentos(c.tipificacion.toLowerCase()).includes(texto) ||
-                quitarAcentos(c.respuesta.toLowerCase()).includes(texto)
-            );
-            mostrarTramites(filtradas);
-        });
+    // Toggle manual
+    toggle.addEventListener("click", () => {
+      const currentTheme = body.getAttribute("data-theme");
+      body.setAttribute("data-theme", currentTheme === "dark" ? "light" : "dark");
+    });
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'f' && (e.ctrlKey || e.metaKey)) {
-                e.preventDefault();
-                input.focus();
-            }
-        });
+    // ===== Buscador =====
+    const searchInput = document.getElementById("searchInput");
+    const cards = document.querySelectorAll(".card");
+    searchInput.addEventListener("input", () => {
+      const term = searchInput.value.toLowerCase();
+      cards.forEach(card => {
+        card.style.display = card.textContent.toLowerCase().includes(term) ? "" : "none";
+      });
+    });
 
-        // ====== MODO OSCURO / CLARO ======
-        function aplicarModoOscuro(activar) {
-            if (activar) {
-                document.body.classList.add("dark-mode");
-                toggleMode.textContent = "☀️ Modo claro";
-                localStorage.setItem("modo", "oscuro");
-            } else {
-                document.body.classList.remove("dark-mode");
-                toggleMode.textContent = "🌙 Modo oscuro";
-                localStorage.setItem("modo", "claro");
-            }
-        }
-
-        toggleMode.addEventListener("click", () => {
-            const esOscuro = !document.body.classList.contains("dark-mode");
-            aplicarModoOscuro(esOscuro);
-        });
-
-        // Cargar preferencia guardada
-        if (localStorage.getItem("modo") === "oscuro") {
-            aplicarModoOscuro(true);
-        }
-
-        // ====== INICIAL ======
-        filtrarPorCategoria("Todos");
-    </script>
+    // ===== Filtro =====
+    const categoryFilter = document.getElementById("categoryFilter");
+    categoryFilter.addEventListener("change", () => {
+      const selected = categoryFilter.value;
+      cards.forEach(card => {
+        card.style.display =
+          selected === "todas" || card.dataset.category === selected ? "" : "none";
+      });
+    });
+  </script>
 </body>
 </html>
