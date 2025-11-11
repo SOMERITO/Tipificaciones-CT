@@ -256,9 +256,20 @@
 
 /* --- ATAJO CTRL + F PERSONALIZADO --- */
 document.addEventListener("keydown", (e) => {
-  if (e.key === "f" && (e.ctrlKey || e.metaKey)) {
-    e.preventDefault();
-    document.getElementById("busqueda").focus();
+  // Detecta si se presiona Ctrl + F o Cmd + F (Mac)
+  if ((e.ctrlKey || e.metaKey) && e.key === "f") {
+    e.preventDefault(); // Evita que aparezca el buscador del navegador
+    
+    // Encuentra el input por su ID
+    const buscador = document.getElementById("busqueda");
+    
+    if (buscador) {
+      buscador.focus();       // Lleva el cursor al buscador
+      buscador.select();      // Selecciona el texto (si había algo escrito)
+      // Agrega un pequeño efecto visual
+      buscador.style.boxShadow = "0 0 8px 2px #7900b9";
+      setTimeout(() => buscador.style.boxShadow = "", 800); // Se apaga el brillo luego
+    }
   }
 });
   </script>
