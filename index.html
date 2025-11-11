@@ -209,14 +209,17 @@
         <button data-filtro="Todos" class="active">Todos</button>
         <button data-filtro="EVALUACIONES">Evaluaciones</button>
         <button data-filtro="CERTIFICADOS">Certificados/Diplomas</button>
-        <button data-filtro="TRÁMITES">TRÁMITES</button>
+        <button data-filtro="TRÁMITES-PASOS">TRÁMITES</button>
         <button data-filtro="GENERAL">Consultas Generales</button>
     </div>
     <div id="lista"></div>
 
     <script>
         const tramites = [
-            { "codigo": "RETIRO DE CICLO", "tipificacion": "Solicita información sobre trámite de Retiro de Ciclo", "respuesta": "Trámites > Retiro de ciclo > Fechas e información clave del proceso", "categoria": "TRÁMITES" },
+            { "codigo": "RETIRO DE CICLO", "tipificacion": "Solicita información sobre trámite de Retiro de Ciclo / Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC.", "respuesta": "Trámites > Retiro de ciclo > Fechas e información clave del proceso", "categoria": "TRÁMITES-PASOS" },
+            
+            { "codigo": "RETIRO DE CICLO - TIENE CURSOS EN EL MOD A Y DESEA TRAMITAR EL RETIRO EN EL MOD. B", "tipificacion": "Consulta por el trámite de Retiro de Ciclo / Se verifica que el alumno cuenta con matrícula en el Módulo A y se le indica que no es posible generar la solicitud de Retiro de Ciclo, ya que este trámite debió realizarse en las fechas correspondientes al Módulo A y no durante el Módulo B.", "respuesta": "Trámites > Retiro de ciclo > Fechas e información clave del proceso", "categoria": "TRÁMITES-PASOS" },
+            
             { "codigo": "DEVOLUCIÓN DE PAGOS", "tipificacion": "Solicita los pasos para Devolución de Pagos", "respuesta": "Se brindan los pasos a seguir, plazo de atención y más detalles.", "categoria": "FINANCIERO" },
             { "codigo": "SUBSANACIÓN DE EVALUACIÓN", "tipificacion": "Solicita los pasos para Subsanación de Evaluaciones", "respuesta": "Se brindan fechas, costo y link de Explora UPC.", "categoria": "EVALUACIONES" },
             { "codigo": "COPIA CERTIFICADA VIRTUAL", "tipificacion": "Solicita información sobre Copia Certificada Virtual", "respuesta": "Se brinda información sobre costo, plazo y fechas disponibles.", "categoria": "CERTIFICADOS" }
