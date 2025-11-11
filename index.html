@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>💡 Trámites y Consultas UPC</title>
+    <title>Tipificaciones CT UPC</title>
     
     <style>
         /* Estilos Generales */
@@ -13,6 +13,7 @@
             text-align: center;
             margin: 0;
             padding: 20px;
+            transition: background 0.3s, color 0.3s;
         }
         h1 {
             color: #7900b9; 
@@ -50,7 +51,6 @@
             font-size: 0.85em;
             white-space: nowrap; 
         }
-        /* Estilo para resaltar el botón activo */
         #filtros button.active,
         #filtros button:hover {
             background-color: #7900b9;
@@ -102,15 +102,109 @@
             font-size: 1em;
             color: #333;
             padding-top: 5px;
-            border-top: 1px dashed #eee; /* Separador entre la consulta y la respuesta */
+            border-top: 1px dashed #eee;
+        }
+
+        /* --- SWITCH DE MODO OSCURO --- */
+        .theme-toggle {
+            position: absolute;
+            top: 15px;
+            right: 25px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+            color: #333;
+            user-select: none;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 45px;
+            height: 22px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 22px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #7900b9;
+        }
+        input:checked + .slider:before {
+            transform: translateX(23px);
+        }
+
+        /* --- MODO OSCURO --- */
+        body.dark {
+            background: #1f1f23;
+            color: #e5e5e5;
+        }
+        body.dark h1 {
+            color: #c9a7ff;
+        }
+        body.dark input {
+            background: #2b2b30;
+            color: #e5e5e5;
+            border: 2px solid #c9a7ff;
+        }
+        body.dark #filtros button {
+            background-color: #2b2b30;
+            color: #d3c9ff;
+            border: 1px solid #c9a7ff;
+        }
+        body.dark #filtros button.active,
+        body.dark #filtros button:hover {
+            background-color: #7900b9;
+            color: white;
+            border-color: #5d008f;
+        }
+        body.dark .item {
+            background: #2b2b30;
+            border-left: 8px solid #c9a7ff;
+            color: #ddd;
+        }
+        body.dark .respuesta {
+            border-top: 1px dashed #555;
+            color: #eee;
         }
     </style>
-    </head>
-<body>
-    <h1>💡 Buscador de Trámites UPC</h1>
-    
-    <input type="text" id="busqueda" placeholder="Buscar por trámite o pasos..." />
+</head>
 
+<body>
+    <div class="theme-toggle">
+        🌞
+        <label class="switch">
+            <input type="checkbox" id="modeSwitch">
+            <span class="slider"></span>
+        </label>
+        🌜
+    </div>
+
+    <h1>TIPIFICACIONES CT</h1>
+    <input type="text" id="busqueda" placeholder="Buscar por trámite o pasos..." />
     <div id="filtros">
         <button data-filtro="Todos" class="active">Todos</button>
         <button data-filtro="EVALUACIONES">Evaluaciones</button>
@@ -118,87 +212,32 @@
         <button data-filtro="TRÁMITES">TRÁMITES</button>
         <button data-filtro="GENERAL">Consultas Generales</button>
     </div>
-    
     <div id="lista"></div>
 
     <script>
-        // 1. DATASET COMPLETO (La lista de trámites y respuestas)
         const tramites = [
-            { 
-                "codigo": "RETIRO DE CICLO", 
-                "tipificacion": "Solicita información sobre trámite de Retiro de Ciclo / Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC. ", 
-                "respuesta": "Trámites > Retiro de ciclo > Fechas e información clave del proceso", 
-                "categoria": "TRÁMITES"
-            },
-            { 
-                "codigo": "DEVOLUCIÓN DE PAGOS", 
-                "tipificacion": "Solicita los pasos a seguir para poder generar solicitud de Devolución de Pagos", 
-                "respuesta": "Se brindan los pasos a seguir, plazo de atención y cómo poder obtener mayores detalles a través de Explora UPC.", 
-                "categoria": "FINANCIERO"
-            },
-            { 
-                "codigo": "SUBSANACIÓN DE EVALUACIÓN", 
-                "tipificacion": "Solicita los pasos a seguir para poder generar solicitud de Subsanación de Evaluaciones", 
-                "respuesta": "Se brindan los puntos de consideración, fechas disponibles, plazo de atención, costo y se comparte link de Explora UPC para que pueda obtener mayor información al respecto.", 
-                "categoria": "EVALUACIONES"
-            },
-            { 
-                "codigo": "COPIA CERTIFICADA VIRTUAL DE DIPLOMA DE BACHILLER O TÍTULO PROFESIONAL", 
-                "tipificacion": "Solicita información sobre trámite de Copia Certificada Virtual", 
-                "respuesta": "Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC.", 
-                "categoria": "CERTIFICADOS"
-            },
-            { 
-                "codigo": "RECUPERACIÓN DE EVALUACIÓN", 
-                "tipificacion": "Solicita los pasos a seguir para poder generar solicitud de Recuperación de Evaluación", 
-                "respuesta": "Se brindan los puntos de consideración, fechas disponibles, plazo de atención, costo y se comparte link de Explora UPC para que pueda obtener mayor información al respecto.", 
-                "categoria": "EVALUACIONES"
-            },
-            { 
-                "codigo": "CERTIFICADO DE ESTUDIOS - FIRMA DIGITAL", 
-                "tipificacion": "Solicita información sobre trámite de Certificado de Estudios - Firma Digital", 
-                "respuesta": "Se brinda información sobre el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC.", 
-                "categoria": "CERTIFICADOS"
-            },
-            { 
-                "codigo": "CERTIFICADO DE ESTUDIOS - FIRMA ELECTRÓNICA", 
-                "tipificacion": "Solicita información sobre trámite de Certificado de Estudios - Firma Electrónica", 
-                "respuesta": "Se brinda información sobre el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC.", 
-                "categoria": "CERTIFICADOS"
-            },
-            { 
-                "codigo": "EMISIÓN DE SÍLABO", 
-                "tipificacion": "Solicita información sobre trámite de Emisión de Sílabo", 
-                "respuesta": "Se brinda información sobre el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC.", 
-                "categoria": "CERTIFICADOS" 
-            }
+            { "codigo": "RETIRO DE CICLO", "tipificacion": "Solicita información sobre trámite de Retiro de Ciclo", "respuesta": "Trámites > Retiro de ciclo > Fechas e información clave del proceso", "categoria": "TRÁMITES" },
+            { "codigo": "DEVOLUCIÓN DE PAGOS", "tipificacion": "Solicita los pasos para Devolución de Pagos", "respuesta": "Se brindan los pasos a seguir, plazo de atención y más detalles.", "categoria": "FINANCIERO" },
+            { "codigo": "SUBSANACIÓN DE EVALUACIÓN", "tipificacion": "Solicita los pasos para Subsanación de Evaluaciones", "respuesta": "Se brindan fechas, costo y link de Explora UPC.", "categoria": "EVALUACIONES" },
+            { "codigo": "COPIA CERTIFICADA VIRTUAL", "tipificacion": "Solicita información sobre Copia Certificada Virtual", "respuesta": "Se brinda información sobre costo, plazo y fechas disponibles.", "categoria": "CERTIFICADOS" }
         ];
 
-        // 2. OBTENER ELEMENTOS DEL DOM
         const input = document.getElementById("busqueda");
         const lista = document.getElementById("lista");
         const contenedorFiltros = document.getElementById("filtros");
-
         let categoriaActiva = "Todos"; 
 
-        // Función auxiliar para eliminar acentos de una cadena (mantiene la búsqueda flexible)
-        const quitarAcentos = (str) => {
-            return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-        };
+        const quitarAcentos = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-        // 3. FUNCIÓN PARA DIBUJAR LA LISTA
         function mostrarTramites(filtradas) {
             lista.innerHTML = ""; 
             if (filtradas.length === 0) {
-                 lista.innerHTML = '<p style="text-align:center; color:#999; margin-top:30px;">No se encontraron resultados para la búsqueda o filtro.</p>';
-                 return;
+                lista.innerHTML = '<p style="text-align:center; color:#999;">No se encontraron resultados.</p>';
+                return;
             }
             filtradas.forEach(c => {
                 const div = document.createElement("div");
                 div.classList.add("item");
-                
-                // *** AQUÍ ESTÁ LA MODIFICACIÓN ***
-                // Se eliminan las etiquetas "Consulta:" y "Respuesta/Pasos:"
                 div.innerHTML = `
                     <div class="item-header">
                         <span class="codigo">${c.codigo}</span>
@@ -207,96 +246,62 @@
                     <span class="tipificacion">${c.tipificacion}</span>
                     <span class="respuesta">${c.respuesta}</span>
                 `;
-                // ********************************
-                
                 lista.appendChild(div);
             });
         }
 
-        // 4. FUNCIÓN MAESTRA DE SEGMENTACIÓN (FILTRADO POR CATEGORÍA)
         function filtrarPorCategoria(categoria) {
-            let listaResultado = tramites; 
-
-            if (categoria !== "Todos") {
-                listaResultado = tramites.filter(tramite => tramite.categoria === categoria);
-            }
-
+            let listaResultado = categoria === "Todos" ? tramites : tramites.filter(t => t.categoria === categoria);
             mostrarTramites(listaResultado);
-            
-            document.querySelectorAll('#filtros button').forEach(btn => {
-                btn.classList.remove('active');
-            });
+            document.querySelectorAll('#filtros button').forEach(btn => btn.classList.remove('active'));
             document.querySelector(`[data-filtro="${categoria}"]`).classList.add('active');
-            
             categoriaActiva = categoria; 
         }
 
-        // 5. EVENTO PARA EL FILTRO POR BOTÓN (CLICK)
-        contenedorFiltros.addEventListener("click", (evento) => {
-            if (evento.target.tagName === 'BUTTON' && evento.target.dataset.filtro) {
-                const categoriaSeleccionada = evento.target.dataset.filtro;
+        contenedorFiltros.addEventListener("click", (e) => {
+            if (e.target.tagName === 'BUTTON') {
                 input.value = ""; 
-                filtrarPorCategoria(categoriaSeleccionada);
+                filtrarPorCategoria(e.target.dataset.filtro);
             }
         });
 
-        // 6. EVENTO PARA LA BÚSQUEDA POR TEXTO (INPUT)
         input.addEventListener("input", () => {
-            const texto = input.value.toLowerCase();
-            
-            let listaBase = tramites;
-            if (categoriaActiva !== "Todos") {
-                listaBase = tramites.filter(tramite => tramite.categoria === categoriaActiva);
-            }
-
-            // Normaliza la entrada de texto
-            const textoSinAcentos = quitarAcentos(texto);
-
-            // 6.2. Aplica el filtro de texto sobre el subconjunto (buscando en las versiones sin acentos)
-            const filtradasPorTexto = listaBase.filter(c => {
-                // Normaliza y convierte a minúsculas los campos de los datos para la comparación
-                const codigoSinAcentos = quitarAcentos(c.codigo.toLowerCase());
-                const tipificacionSinAcentos = quitarAcentos(c.tipificacion.toLowerCase());
-                const respuestaSinAcentos = quitarAcentos(c.respuesta.toLowerCase());
-
-                return codigoSinAcentos.includes(textoSinAcentos) ||
-                       tipificacionSinAcentos.includes(textoSinAcentos) ||
-                       respuestaSinAcentos.includes(textoSinAcentos);
-            });
-            
-            mostrarTramites(filtradasPorTexto);
+            const texto = quitarAcentos(input.value.toLowerCase());
+            let base = categoriaActiva === "Todos" ? tramites : tramites.filter(t => t.categoria === categoriaActiva);
+            const filtradas = base.filter(c => 
+                quitarAcentos(c.codigo.toLowerCase()).includes(texto) ||
+                quitarAcentos(c.tipificacion.toLowerCase()).includes(texto) ||
+                quitarAcentos(c.respuesta.toLowerCase()).includes(texto)
+            );
+            mostrarTramites(filtradas);
         });
-        
-        // 7. EVENTO DE TECLADO PARA FOCALIZAR EL BUSCADOR (CTRL + F)
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'f' && (e.ctrlKey || e.metaKey)) {
-                e.preventDefault(); 
-                input.focus();      
+
+        document.addEventListener("keydown", (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "f") {
+                e.preventDefault();
+                input.focus();
+                input.scrollIntoView({ behavior: "smooth", block: "center" });
             }
         });
 
-
-        // INICIALIZACIÓN: Muestra la lista completa al cargar la página
         filtrarPorCategoria("Todos"); 
-      /* --- ATAJO CTRL + F PERSONALIZADO --- */
-document.addEventListener("keydown", (e) => {
-  // Detecta si se presiona Ctrl + F o Cmd + F (Mac)
-  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "f") {
-    e.preventDefault(); // Evita que aparezca el buscador del navegador
-    
-    // Encuentra el input por su ID correcto
-    const buscador = document.getElementById("searchInput");
-    
-    if (buscador) {
-      buscador.scrollIntoView({ behavior: "smooth", block: "center" }); // Desplaza la vista hasta el input
-      buscador.focus();       // Lleva el cursor al buscador
-      buscador.select();      // Selecciona el texto (si había algo escrito)
-      // Agrega un pequeño efecto visual
-      buscador.style.boxShadow = "0 0 8px 2px #7900b9";
-      setTimeout(() => buscador.style.boxShadow = "", 800); // Se apaga el brillo luego
-    }
-  }
-});
+
+        /* --- MODO OSCURO --- */
+        const switchToggle = document.getElementById("modeSwitch");
+        const savedMode = localStorage.getItem("theme");
+        if (savedMode === "dark") {
+            document.body.classList.add("dark");
+            switchToggle.checked = true;
+        }
+        switchToggle.addEventListener("change", () => {
+            if (switchToggle.checked) {
+                document.body.classList.add("dark");
+                localStorage.setItem("theme", "dark");
+            } else {
+                document.body.classList.remove("dark");
+                localStorage.setItem("theme", "light");
+            }
+        });
     </script>
-    </body>
+</body>
 </html>
