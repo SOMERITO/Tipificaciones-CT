@@ -1,331 +1,311 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tipificaciones CT UPC</title>
-    
-    <style>
-        /* Estilos Generales */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f4f4f9; 
-            text-align: center;
-            margin: 0;
-            padding: 20px;
-            transition: background 0.3s, color 0.3s;
-        }
-        h1 {
-            color: #7900b9; 
-        }
-        /* Estilo de la caja de búsqueda */
-        input {
-            width: 80%;
-            padding: 10px;
-            border: 2px solid #7900b9; 
-            border-radius: 10px;
-            margin-bottom: 15px;
-            box-sizing: border-box; 
-            max-width: 700px;
-            font-size: 1em;
-        }
-        /* Estilos para la barra de filtros */
-        #filtros {
-            margin-bottom: 20px;
-            display: flex; 
-            flex-wrap: wrap; 
-            justify-content: center;
-            max-width: 90%;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        #filtros button {
-            background-color: #e5e0f5;
-            color: #38005b;
-            border: 1px solid #c0b5e8;
-            padding: 8px 12px;
-            margin: 4px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-            font-size: 0.85em;
-            white-space: nowrap; 
-        }
-        #filtros button.active,
-        #filtros button:hover {
-            background-color: #7900b9;
-            color: white;
-            border-color: #5d008f;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tipificaciones CT UPC</title>
 
-        /* Estilos de cada item de la lista */
-        .item {
-            background: white;
-            border-left: 8px solid #7900b9; 
-            margin: 10px auto;
-            padding: 15px;
-            width: 80%;
-            max-width: 700px;
-            border-radius: 8px;
-            text-align: left;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-        .item-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .codigo {
-            font-weight: bold;
-            color: #7900b9;
-            margin-right: 10px;
-            font-size: 1.2em;
-        }
-        .categoria-tag {
-            font-size: 0.7em;
-            color: white;
-            background: #3498db; 
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-        .tipificacion {
-            font-size: 0.9em;
-            color: #555;
-            margin-bottom: 8px;
-            font-style: italic;
-        }
-        .respuesta {
-            font-size: 1em;
-            color: #333;
-            padding-top: 5px;
-            border-top: 1px dashed #eee;
-        }
+  <style>
+    /* --- ESTILOS GENERALES --- */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #f4f4f9;
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      transition: background 0.3s, color 0.3s;
+    }
+    h1 {
+      color: #7900b9;
+    }
 
-        /* --- SWITCH DE MODO OSCURO --- */
-        .theme-toggle {
-            position: absolute;
-            top: 15px;
-            right: 25px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.9em;
-            color: #333;
-            user-select: none;
-        }
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 45px;
-            height: 22px;
-        }
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: 0.4s;
-            border-radius: 22px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 2px;
-            bottom: 2px;
-            background-color: white;
-            transition: 0.4s;
-            border-radius: 50%;
-        }
-        input:checked + .slider {
-            background-color: #7900b9;
-        }
-        input:checked + .slider:before {
-            transform: translateX(23px);
-        }
+    /* --- INPUT DE BÚSQUEDA --- */
+    input {
+      width: 80%;
+      padding: 10px;
+      border: 2px solid #7900b9;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+      max-width: 700px;
+      font-size: 1em;
+    }
 
-        /* --- MODO OSCURO --- */
-        body.dark {
-            background: #1f1f23;
-            color: #e5e5e5;
-        }
-        body.dark h1 {
-            color: #c9a7ff;
-        }
-        body.dark input {
-            background: #2b2b30;
-            color: #e5e5e5;
-            border: 2px solid #c9a7ff;
-        }
-        body.dark #filtros button {
-            background-color: #2b2b30;
-            color: #d3c9ff;
-            border: 1px solid #c9a7ff;
-        }
-        body.dark #filtros button.active,
-        body.dark #filtros button:hover {
-            background-color: #7900b9;
-            color: white;
-            border-color: #5d008f;
-        }
-        body.dark .item {
-            background: #2b2b30;
-            border-left: 8px solid #c9a7ff;
-            color: #ddd;
-        }
-        body.dark .respuesta {
-            border-top: 1px dashed #555;
-            color: #eee;
-        }
-    </style>
+    /* --- FILTROS --- */
+    #filtros {
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 90%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #filtros button {
+      background-color: #e5e0f5;
+      color: #38005b;
+      border: 1px solid #c0b5e8;
+      padding: 8px 12px;
+      margin: 4px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+      font-size: 0.85em;
+      white-space: nowrap;
+    }
+    #filtros button.active,
+    #filtros button:hover {
+      background-color: #7900b9;
+      color: white;
+      border-color: #5d008f;
+    }
+
+    /* --- ITEMS --- */
+    .item {
+      background: white;
+      border-left: 8px solid #7900b9;
+      margin: 10px auto;
+      padding: 15px;
+      width: 80%;
+      max-width: 700px;
+      border-radius: 8px;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .codigo {
+      font-weight: bold;
+      color: #7900b9;
+      margin-right: 10px;
+      font-size: 1.2em;
+    }
+    .categoria-tag {
+      font-size: 0.7em;
+      color: white;
+      background: #3498db;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .tipificacion {
+      font-size: 0.9em;
+      color: #555;
+      margin-bottom: 8px;
+      font-style: italic;
+    }
+    .respuesta {
+      font-size: 1em;
+      color: #333;
+      padding-top: 5px;
+      border-top: 1px dashed #eee;
+    }
+
+    /* --- SWITCH MODO OSCURO --- */
+    .theme-toggle {
+      position: absolute;
+      top: 15px;
+      right: 25px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9em;
+      color: #333;
+      user-select: none;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 45px;
+      height: 22px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 22px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #7900b9;
+    }
+    input:checked + .slider:before {
+      transform: translateX(23px);
+    }
+
+    /* --- MODO OSCURO --- */
+    body.dark {
+      background: #1f1f23;
+      color: #e5e5e5;
+    }
+    body.dark h1 {
+      color: #c9a7ff;
+    }
+    body.dark input {
+      background: #2b2b30;
+      color: #e5e5e5;
+      border: 2px solid #c9a7ff;
+    }
+    body.dark #filtros button {
+      background-color: #2b2b30;
+      color: #d3c9ff;
+      border: 1px solid #c9a7ff;
+    }
+    body.dark #filtros button.active,
+    body.dark #filtros button:hover {
+      background-color: #7900b9;
+      color: white;
+      border-color: #5d008f;
+    }
+    body.dark .item {
+      background: #2b2b30;
+      border-left: 8px solid #c9a7ff;
+      color: #ddd;
+    }
+    body.dark .respuesta {
+      border-top: 1px dashed #555;
+      color: #eee;
+    }
+  </style>
 </head>
 
 <body>
-    <div class="theme-toggle">
-        🌞
-        <label class="switch">
-            <input type="checkbox" id="modeSwitch">
-            <span class="slider"></span>
-        </label>
-        🌜
-    </div>
+  <div class="theme-toggle">
+    🌞
+    <label class="switch">
+      <input type="checkbox" id="modeSwitch">
+      <span class="slider"></span>
+    </label>
+    🌜
+  </div>
 
-    <h1>TIPIFICACIONES CT</h1>
-    <input type="text" id="busqueda" placeholder="Buscar por trámite o pasos..." />
-    <div id="filtros">
-        <button data-filtro="Todos" class="active">Todos</button>
-        <button data-filtro="EVALUACIONES">Evaluaciones</button>
-        <button data-filtro="CERTIFICADOS">Certificados/Diplomas</button>
-        <button data-filtro="TRÁMITES-PASOS">TRÁMITES</button>
-        <button data-filtro="GENERAL">Consultas Generales</button>
-    </div>
-    <div id="lista"></div>
+  <h1>TIPIFICACIONES CT</h1>
 
-    <script>
-        const tramites = [
-            
-            { "codigo": "RETIRO DE CICLO", "tipificacion": "Solicita información sobre trámite de Retiro de Ciclo / Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC.", "respuesta": "Trámites > Retiro de ciclo > Fechas e información clave del proceso", "categoria": "TRÁMITES-PASOS" },
-            
-            { "codigo": "RETIRO DE CICLO - TIENE CURSOS EN EL MOD A Y DESEA TRAMITAR EL RETIRO EN EL MOD. B", "tipificacion": "Consulta por el trámite de Retiro de Ciclo / Se verifica que el alumno cuenta con matrícula en el Módulo A y se le indica que no es posible generar la solicitud de Retiro de Ciclo, ya que este trámite debió realizarse en las fechas correspondientes al Módulo A y no durante el Módulo B.", "respuesta": "Trámites > Retiro de ciclo > Fechas e información clave del proceso", "categoria": "TRÁMITES-PASOS" },
-            
-            { "codigo": "RETIRO DE ASIGNATURA - PASOS", "tipificacion": "Solicita información sobre trámite de Retiro de Asignatura / Se brindan información sobre fechas disponibles, plazo de atención, costo y cómo poder obtener mayores detalles a través de Explora UPC. ", "respuesta": "Trámites > Retiro de asignatura > Información del proceso", "categoria": "TRÁMITES-PASOS" },
+  <input type="text" id="busqueda" placeholder="Buscar por trámite o pasos..." />
 
-            { "codigo": "CAMBIO DE MODALIDAD - PASOS", "tipificacion": "Solicita información sobre trámite de Cambio de Modalidad / Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC. ", "respuesta": "Trámites > Cambio de modalidad > Traslado de Pregrado a EPE - WS o viceversa", "categoria": "TRÁMITES-PASOS" },
+  <div id="filtros">
+    <button data-filtro="Todos" class="active">Todos</button>
+    <button data-filtro="EVALUACIONES">Evaluaciones</button>
+    <button data-filtro="CERTIFICADOS">Certificados/Diplomas</button>
+    <button data-filtro="TRÁMITES-PASOS">Trámites</button>
+    <button data-filtro="GENERAL">Consultas Generales</button>
+  </div>
 
-            { "codigo": "TRASLADO DE CARRERA - PASOS", "tipificacion": "Solicita información sobre trámite de Traslado de Carrera / Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC. ", "respuesta": "Trámites > Traslado de carrera > Fechas e información clave del proceso", "categoria": "TRÁMITES-PASOS" },
+  <div id="lista"></div>
 
-            { "codigo": "TRASLADO DE CAMPUS - PASOS", "tipificacion": "Solicita información sobre trámite de Traslado de Campus / Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC. ", "respuesta": "Trámites > Traslado de campus > Fechas e información clave del proceso", "categoria": "TRÁMITES-PASOS" },
+  <script>
+    const tramites = [
+      { "codigo": "RETIRO DE CICLO", "tipificacion": "Solicita información sobre trámite de Retiro de Ciclo.", "respuesta": "Trámites > Retiro de ciclo > Fechas e información clave.", "categoria": "TRÁMITES-PASOS" },
+      { "codigo": "CAMBIO DE MODALIDAD - PASOS", "tipificacion": "Solicita información sobre cambio de modalidad.", "respuesta": "Trámites > Cambio de modalidad > Pregrado a EPE.", "categoria": "TRÁMITES-PASOS" },
+      { "codigo": "DEVOLUCIÓN DE PAGOS", "tipificacion": "Solicita los pasos para Devolución de Pagos.", "respuesta": "Se brindan los pasos a seguir y plazos de atención.", "categoria": "FINANCIERO" },
+      { "codigo": "SUBSANACIÓN DE EVALUACIÓN", "tipificacion": "Solicita los pasos para Subsanación de Evaluaciones.", "respuesta": "Fechas, costo y link de Explora UPC.", "categoria": "EVALUACIONES" }
+    ];
 
-            { "codigo": "CONVALIDACIÓN DE ASIGNATURAS - PASOS", "tipificacion": "Solicita información sobre trámite de Convalidación de Asignaturas / Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC. ", "respuesta": "Trámites > Convalidación de asignatura > Fechas e información clave del proceso", "categoria": "TRÁMITES-PASOS" },
+    const input = document.getElementById("busqueda");
+    const lista = document.getElementById("lista");
+    const contenedorFiltros = document.getElementById("filtros");
+    let categoriaActiva = "Todos";
 
-            { "codigo": "DEVOLUCIÓN DE PAGOS - PASOS", "tipificacion": "Solicita los pasos a seguir para poder generar solicitud de Devolución de Pagos / Se brindan los pasos a seguir, plazo de atención y cómo poder obtener mayores detalles a través de Explora UPC. ", "respuesta": "Trámites > Devolución de pagos > Fechas e información clave del proceso", "categoria": "TRÁMITES-PASOS" },
+    const quitarAcentos = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-            { "codigo": "SUBSANACIÓN DE EVALUACIÓN - PASOS", "tipificacion": "Solicita los pasos a seguir para poder generar solicitud de Subsanación de Evaluaciones / Se brindan los puntos de consideración, fechas disponibles, plazo de atención, costo y se comparte link de Explora UPC para que pueda obtener mayor información al respecto. ", "respuesta": "Asistencia y Notas > Recuperación y subsanación > Fechas e información clave del proceso", "categoria": "TRÁMITES-PASOS" },
+    function mostrarTramites(filtradas) {
+      lista.innerHTML = "";
+      if (filtradas.length === 0) {
+        lista.innerHTML = '<p style="text-align:center; color:#999;">No se encontraron resultados.</p>';
+        return;
+      }
+      filtradas.forEach(c => {
+        const div = document.createElement("div");
+        div.classList.add("item");
+        div.innerHTML = `
+          <div class="item-header">
+            <span class="codigo">${c.codigo}</span>
+            <span class="categoria-tag">${c.categoria}</span>
+          </div>
+          <span class="tipificacion">${c.tipificacion}</span>
+          <span class="respuesta">${c.respuesta}</span>
+        `;
+        lista.appendChild(div);
+      });
+    }
 
-            { "codigo": "RECUPERACIÓN DE EVALUACIÓN - PASOS", "tipificacion": "Solicita los pasos a seguir para poder generar solicitud de Recuperación de Evaluación / Se brindan los puntos de consideración, fechas disponibles, plazo de atención, costo y se comparte link de Explora UPC para que pueda obtener mayor información al respecto. ", "respuesta": "Asistencia y Notas > Recuperación y subsanación > Fechas e información clave del proceso", "categoria": "TRÁMITES-PASOS" },
+    function filtrarPorCategoria(categoria) {
+      let listaResultado = categoria === "Todos" ? tramites : tramites.filter(t => t.categoria === categoria);
+      mostrarTramites(listaResultado);
+      document.querySelectorAll('#filtros button').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`[data-filtro="${categoria}"]`).classList.add('active');
+      categoriaActiva = categoria;
+    }
 
-            { "codigo": "COPIA CERTIFICADA VIRTUAL DE DIPLOMA DE BACHILLER O TÍTULO PROFESIONAL - PASOS", "tipificacion": "Solicita información sobre trámite de Copia Certificada Virtual / Se brinda información sobre las fechas disponibles, el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC. ", "respuesta": "Trámites > Otros trámites > Copia certificada Virtual", "categoria": "TRÁMITES-PASOS" },
+    contenedorFiltros.addEventListener("click", (e) => {
+      if (e.target.tagName === 'BUTTON') {
+        input.value = "";
+        filtrarPorCategoria(e.target.dataset.filtro);
+      }
+    });
 
-            { "codigo": "CERTIFICADO DE ESTUDIOS - FIRMA DIGITAL - PASOS", "tipificacion": "Solicita información sobre trámite de Certificado de Estudios - Firma Digital / Se brinda información sobre el plazo de atención, el costo del trámite y la manera de obtener mayores detalles a través de Explora UPC.   ", "respuesta": "Trámites > Constancias y certificados > Información clave del proceso", "categoria": "TRÁMITES-PASOS" },
+    input.addEventListener("input", () => {
+      const texto = quitarAcentos(input.value.toLowerCase());
+      let base = categoriaActiva === "Todos" ? tramites : tramites.filter(t => t.categoria === categoriaActiva);
+      const filtradas = base.filter(c =>
+        quitarAcentos(c.codigo.toLowerCase()).includes(texto) ||
+        quitarAcentos(c.tipificacion.toLowerCase()).includes(texto) ||
+        quitarAcentos(c.respuesta.toLowerCase()).includes(texto)
+      );
+      mostrarTramites(filtradas);
+    });
 
-            { "codigo": "DEVOLUCIÓN DE PAGOS", "tipificacion": "Solicita los pasos para Devolución de Pagos", "respuesta": "Se brindan los pasos a seguir, plazo de atención y más detalles.", "categoria": "FINANCIERO" },
-            { "codigo": "SUBSANACIÓN DE EVALUACIÓN", "tipificacion": "Solicita los pasos para Subsanación de Evaluaciones", "respuesta": "Se brindan fechas, costo y link de Explora UPC.", "categoria": "EVALUACIONES" },
-            { "codigo": "COPIA CERTIFICADA VIRTUAL", "tipificacion": "Solicita información sobre Copia Certificada Virtual", "respuesta": "Se brinda información sobre costo, plazo y fechas disponibles.", "categoria": "CERTIFICADOS" }
-        ];
+    document.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "f") {
+        e.preventDefault();
+        input.focus();
+        input.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
 
-        const input = document.getElementById("busqueda");
-        const lista = document.getElementById("lista");
-        const contenedorFiltros = document.getElementById("filtros");
-        let categoriaActiva = "Todos"; 
+    filtrarPorCategoria("Todos");
 
-        const quitarAcentos = (str) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-        function mostrarTramites(filtradas) {
-            lista.innerHTML = ""; 
-            if (filtradas.length === 0) {
-                lista.innerHTML = '<p style="text-align:center; color:#999;">No se encontraron resultados.</p>';
-                return;
-            }
-            filtradas.forEach(c => {
-                const div = document.createElement("div");
-                div.classList.add("item");
-                div.innerHTML = `
-                    <div class="item-header">
-                        <span class="codigo">${c.codigo}</span>
-                        <span class="categoria-tag">${c.categoria}</span>
-                    </div>
-                    <span class="tipificacion">${c.tipificacion}</span>
-                    <span class="respuesta">${c.respuesta}</span>
-                `;
-                lista.appendChild(div);
-            });
-        }
-
-        function filtrarPorCategoria(categoria) {
-            let listaResultado = categoria === "Todos" ? tramites : tramites.filter(t => t.categoria === categoria);
-            mostrarTramites(listaResultado);
-            document.querySelectorAll('#filtros button').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`[data-filtro="${categoria}"]`).classList.add('active');
-            categoriaActiva = categoria; 
-        }
-
-        contenedorFiltros.addEventListener("click", (e) => {
-            if (e.target.tagName === 'BUTTON') {
-                input.value = ""; 
-                filtrarPorCategoria(e.target.dataset.filtro);
-            }
-        });
-
-        input.addEventListener("input", () => {
-            const texto = quitarAcentos(input.value.toLowerCase());
-            let base = categoriaActiva === "Todos" ? tramites : tramites.filter(t => t.categoria === categoriaActiva);
-            const filtradas = base.filter(c => 
-                quitarAcentos(c.codigo.toLowerCase()).includes(texto) ||
-                quitarAcentos(c.tipificacion.toLowerCase()).includes(texto) ||
-                quitarAcentos(c.respuesta.toLowerCase()).includes(texto)
-            );
-            mostrarTramites(filtradas);
-        });
-
-        document.addEventListener("keydown", (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "f") {
-                e.preventDefault();
-                input.focus();
-                input.scrollIntoView({ behavior: "smooth", block: "center" });
-            }
-        });
-
-        filtrarPorCategoria("Todos"); 
-
-        /* --- MODO OSCURO --- */
-        const switchToggle = document.getElementById("modeSwitch");
-        const savedMode = localStorage.getItem("theme");
-        if (savedMode === "dark") {
-            document.body.classList.add("dark");
-            switchToggle.checked = true;
-        }
-        switchToggle.addEventListener("change", () => {
-            if (switchToggle.checked) {
-                document.body.classList.add("dark");
-                localStorage.setItem("theme", "dark");
-            } else {
-                document.body.classList.remove("dark");
-                localStorage.setItem("theme", "light");
-            }
-        });
-    </script>
+    const switchToggle = document.getElementById("modeSwitch");
+    const savedMode = localStorage.getItem("theme");
+    if (savedMode === "dark") {
+      document.body.classList.add("dark");
+      switchToggle.checked = true;
+    }
+    switchToggle.addEventListener("change", () => {
+      if (switchToggle.checked) {
+        document.body.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+      } else {
+        document.body.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+      }
+    });
+  </script>
 </body>
 </html>
